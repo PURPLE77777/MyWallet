@@ -1,6 +1,7 @@
-import WalletsScreen from '@screens/wallets/WalletsScreen'
-import { IRoute } from './navigation.types'
 import SettingsScreen from '@screens/settings/SettingsScreen'
+import WalletsScreen from '@screens/wallets/WalletsScreen'
+
+import { IRoute } from './navigation.types'
 
 export const routes: IRoute[] = [
 	{

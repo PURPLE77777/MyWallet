@@ -5,8 +5,11 @@
 		"noImplicitAny": false,
 		"baseUrl": "./app",
 		"paths": {
-			// "@/*": ["./app/*"],
-			"@screens/*": ["screens/*"]
+			// "@/*": ["./*"],
+			"@screens/*": ["./screens/*"],
+			"@hooks/*": ["./hooks/*"],
+			"@navigation/*": ["./navigation/*"],
+			"@providers/*": ["./providers/*"]
 		}
 	}
 }

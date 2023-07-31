@@ -1,11 +1,11 @@
-import { View, Text } from 'react-native'
+import { Text, View } from 'react-native'
 
-const SectionScreen = () => {
+const SettingsScreen = () => {
 	return (
 		<View>
-			<Text>SectionScreen</Text>
+			<Text>SettingsScreen</Text>
 		</View>
 	)
 }
 
-export default SectionScreen
+export default SettingsScreen

@@ -14,7 +14,7 @@
 		"ecmaVersion": "latest",
 		"sourceType": "module"
 	},
-	"plugins": ["@typescript-eslint", "react"],
+	"plugins": ["@typescript-eslint", "react", "unused-imports"],
 	"rules": {
 		"no-unused-vars": "warn",
 		"@typescript-eslint/no-unused-vars": "warn",
@@ -24,6 +24,7 @@
 		"no-mixed-spaces-and-tabs": "warn",
 		"no-constant-condition": "warn",
 		"react/prop-types": "warn",
-		"no-empty": "warn"
+		"no-empty": "warn",
+		"unused-imports/no-unused-imports": "warn"
 	}
 }

@@ -1,14 +1,13 @@
-import { View, Text } from 'react-native'
-import { IMenuItem } from './menu.interface'
+import { View } from 'react-native'
+import { menuItemData } from './menu.data'
+import MenuItem from './MenuItem'
 
-interface IBottomMenu {
-	item: IMenuItem
-}
-
-const BottomMenu = ({ item }: IBottomMenu) => {
+const BottomMenu = () => {
 	return (
 		<View>
-			<Text>BottomMenu</Text>
+			{menuItemData.map(item => (
+				<MenuItem item={item} key={item.path} />
+			))}
 		</View>
 	)
 }

@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import Carousel from './components/Carousel'
+import { useState } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 
 interface IProduct {
 	id: number
@@ -12,7 +11,7 @@ interface IProduct {
 	image: string
 }
 
-const MainScreen = () => {
+const WalletsScreen = () => {
 	const [products, setProducts] = useState<IProduct[]>([])
 
 	// const goAddSection = () => {
@@ -46,7 +45,8 @@ const MainScreen = () => {
 
 	return (
 		<View style={[styles.mainContainer]}>
-			<Carousel data={products} />
+			{/* <Carousel data={products} /> */}
+			<Text className='text-red-600'>Wallets</Text>
 		</View>
 	)
 }
@@ -84,4 +84,4 @@ const styles = StyleSheet.create({
 	}
 })
 
-export default MainScreen
+export default WalletsScreen
