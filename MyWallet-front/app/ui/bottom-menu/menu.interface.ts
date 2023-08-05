@@ -1,13 +1,10 @@
-// import { RootStackParaamList } from 'navigation/navigation.types'
-import { RootStackParaamList } from '@navigation/navigation.types'
-import { IconType } from 'react-icons'
-// import * as Heroicons2 from 'react-icons/hi2'
-// import * as AntDesignIcons from 'react-icons/ai'
+import { RootStackParamList } from '@navigation/navigation.types'
 
-// type Icons = keyof typeof Heroicons2 | keyof typeof AntDesignIcons
+import { IIcons } from 'ui/icons/icons.interface'
+
+// export type IPath = Omit<keyof RootStackParamList, 'Auth'>
 
 export interface IMenuItemData {
-	path: keyof RootStackParaamList
-	// iconName: Icons
-	iconName: IconType
+	path: keyof RootStackParamList
+	iconName: IIcons
 }

@@ -1,16 +1,15 @@
-import {
-	View,
-	Text,
-	StyleSheet,
-	useWindowDimensions,
-	Image,
-	FlatList,
-	ImageBackground,
-	TouchableOpacity
-} from 'react-native'
-import PlusAddAccount from '../assets/plus-add_account.svg'
-import { useNavigation, ParamListBase } from '@react-navigation/native'
+import { ParamListBase, useNavigation } from '@react-navigation/native'
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import {
+	FlatList,
+	StyleSheet,
+	Text,
+	TouchableOpacity,
+	View,
+	useWindowDimensions
+} from 'react-native'
+
+import PlusAddAccount from '../assets/plus-add_account.svg'
 
 interface IProduct {
 	id: number

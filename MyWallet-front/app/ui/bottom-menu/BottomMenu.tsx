@@ -1,12 +1,27 @@
+import { FC } from 'react'
 import { View } from 'react-native'
-import { menuItemData } from './menu.data'
-import MenuItem from './MenuItem'
 
-const BottomMenu = () => {
+import { TypeNavigate } from '@navigation/navigation.types'
+
+import MenuItem from './MenuItem'
+import { menuItemData } from './menu.data'
+
+interface IBottonMenu {
+	navigate: TypeNavigate
+	currentRoute: string
+}
+
+const BottomMenu: FC<IBottonMenu> = ({ navigate, currentRoute }) => {
 	return (
-		<View>
-			{menuItemData.map(item => (
-				<MenuItem item={item} key={item.path} />
+		<View className='flex-row'>
+			{menuItemData.map((item, i) => (
+				<MenuItem
+					item={item}
+					key={`${item.path}-${i}}`}
+					num={i}
+					navigate={navigate}
+					currentRoute={currentRoute}
+				/>
 			))}
 		</View>
 	)
