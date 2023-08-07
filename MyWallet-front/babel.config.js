@@ -7,10 +7,10 @@ module.exports = function (api) {
 				'babel-plugin-root-import',
 				{
 					paths: [
-						// {
-						// 	rootPathSuffix: './app',
-						// 	rootPathPrefix: '@/'
-						// },
+						{
+							rootPathSuffix: './app/constants/',
+							rootPathPrefix: '@constants/'
+						},
 						{
 							rootPathSuffix: './app/screens/',
 							rootPathPrefix: '@screens/'
@@ -22,6 +22,10 @@ module.exports = function (api) {
 						{
 							rootPathSuffix: './app/navigation/',
 							rootPathPrefix: '@navigation/'
+						},
+						{
+							rootPathSuffix: './app/ui/',
+							rootPathPrefix: '@ui/'
 						},
 						{
 							rootPathSuffix: './app/providers/',

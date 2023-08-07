@@ -1,25 +1,22 @@
+import { ICONS } from '@constants/icons.constants'
+
 import { IMenuItemData } from './menu.interface'
-import { HiOutlineWallet } from 'react-icons/hi2'
-import { AiOutlineSetting } from 'react-icons/ai'
 
 export const menuItemData: IMenuItemData[] = [
 	{
 		path: 'Wallets',
-		iconName: HiOutlineWallet
+		iconName: ICONS.Wallets
+	},
+	{
+		path: 'Statistics',
+		iconName: ICONS.Statistics
 	},
 	{
 		path: 'Settings',
-		iconName: AiOutlineSetting
+		iconName: ICONS.Settings
+	},
+	{
+		path: 'Profile',
+		iconName: ICONS.Profile
 	}
 ]
-
-// export const menuItemData: IMenuItem[] = [
-//     {
-//         path: 'Wallets',
-//         iconName: <HiOutlineWallet/>
-//     },
-//     {
-//         path: 'Settings',
-//         iconName: 'AiOutlineSetting'
-//     }
-// ]

@@ -6,13 +6,15 @@
 	"useTabs": true,
 	"jsxSingleQuote": true,
 	"arrowParens": "avoid",
+	"plugins": ["@trivago/prettier-plugin-sort-imports"],
 	"importOrder": [
 		"<THIRD_PARTY_MODULES>",
-		"^@hooks/(.*)$",
 		"^@navigation/(.*)$",
 		"^@providers/(.*)$",
+		"^@constants/(.*)$",
 		"^@screens/(.*)$",
 		"^@types/(.*)$",
+		"^@hooks/(.*)$",
 		"^@ui/(.*)$",
 		"^../(.*)$",
 		"^./(.*)$"

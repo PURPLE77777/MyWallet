@@ -1,6 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useRoute } from '@react-navigation/native'
 import { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
+
+import Layout from '@ui/layout/Layout'
 
 interface IProduct {
 	id: number
@@ -13,6 +16,8 @@ interface IProduct {
 
 const WalletsScreen = () => {
 	const [products, setProducts] = useState<IProduct[]>([])
+
+	const route = useRoute()
 
 	// const goAddSection = () => {
 	// 	navigation.navigate('AddSection')
@@ -44,44 +49,13 @@ const WalletsScreen = () => {
 	// }, [])
 
 	return (
-		<View style={[styles.mainContainer]}>
-			{/* <Carousel data={products} /> */}
-			<Text className='text-red-600'>Wallets</Text>
-		</View>
+		<Layout title={route.name}>
+			<View>
+				{/* <Carousel data={products} /> */}
+				<Text className='text-red-600'>{route.name}</Text>
+			</View>
+		</Layout>
 	)
 }
-
-const styles = StyleSheet.create({
-	mainContainer: {
-		alignItems: 'center',
-		justifyContent: 'center'
-	},
-	text: {
-		fontSize: 20
-	},
-	button: {
-		width: 100,
-		shadowColor: 'white',
-		marginTop: 10
-	},
-	buttonInc: {
-		backgroundColor: 'lime'
-	},
-	buttonDec: {
-		backgroundColor: 'red'
-	},
-	buttonText: {
-		textAlign: 'center',
-		padding: 10
-	},
-	productContainer: {
-		backgroundColor: '#ccc'
-	},
-	productView: {
-		height: 50,
-		flexDirection: 'row',
-		justifyContent: 'space-between'
-	}
-})
 
 export default WalletsScreen

@@ -1,8 +1,17 @@
+import { SafeAreaProvider } from 'react-native-safe-area-context'
+
 import Navigation from '@navigation/Navigation'
+
+import AuthProvider from '@providers/auth/AuthProvider'
 
 export default function App() {
 	return (
-		<Navigation />
+		<AuthProvider>
+			<SafeAreaProvider>
+				<Navigation />
+				{/* <StatusBar style='dark' translucent={true} hidden={false} /> */}
+			</SafeAreaProvider>
+		</AuthProvider>
 		// 	<NavigationContainer>
 		// 	<Stack.Navigator
 		// 		initialRouteName='Main'
