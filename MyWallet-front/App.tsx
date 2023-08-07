@@ -6,12 +6,12 @@ import AuthProvider from '@providers/auth/AuthProvider'
 
 export default function App() {
 	return (
-		<SafeAreaProvider>
-			<AuthProvider>
+		<AuthProvider>
+			<SafeAreaProvider>
 				<Navigation />
-			</AuthProvider>
-			{/* <StatusBar style='dark' translucent={true} hidden={false} /> */}
-		</SafeAreaProvider>
+				{/* <StatusBar style='dark' translucent={true} hidden={false} /> */}
+			</SafeAreaProvider>
+		</AuthProvider>
 		// 	<NavigationContainer>
 		// 	<Stack.Navigator
 		// 		initialRouteName='Main'

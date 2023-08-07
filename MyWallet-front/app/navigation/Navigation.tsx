@@ -22,7 +22,7 @@ const Navigation = () => {
 	const navigation = useNavigationContainerRef()
 
 	useEffect(() => {
-		async function loadFonts() {
+		const loadFonts = async () => {
 			try {
 				await useFonts()
 				await new Promise(resolve => setTimeout(resolve, 2000))
@@ -36,17 +36,9 @@ const Navigation = () => {
 		loadFonts()
 	}, [])
 
-	useEffect(() => {
+	const updateRoute = () => {
 		setCurrentRoute(navigation.getCurrentRoute()?.name)
-
-		const navListener = navigation.addListener('state', () => {
-			setCurrentRoute(navigation.getCurrentRoute()?.name)
-		})
-
-		return () => {
-			navigation.removeListener('state', navListener)
-		}
-	})
+	}
 
 	if (!isFontLoaded) {
 		return (
@@ -63,7 +55,11 @@ const Navigation = () => {
 
 	return (
 		<>
-			<NavigationContainer ref={navigation}>
+			<NavigationContainer
+				ref={navigation}
+				onReady={updateRoute}
+				onStateChange={updateRoute}
+			>
 				<PrivateNavigation />
 			</NavigationContainer>
 
