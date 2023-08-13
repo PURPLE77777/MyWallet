@@ -1,5 +1,5 @@
 import ProfileScreen from '@screens/profile/ProfileScreen'
-import SettingsScreen from '@screens/settings/SettingsScreen'
+import SectionsScreen from '@screens/sections/SectionsScreen'
 import StatisticsScreen from '@screens/statistics/StatisticsScreen'
 import WalletsScreen from '@screens/wallets/WalletsScreen'
 
@@ -11,8 +11,8 @@ export const routes: IRoute[] = [
 		component: WalletsScreen
 	},
 	{
-		name: 'Settings',
-		component: SettingsScreen
+		name: 'SectionsCnf',
+		component: SectionsScreen
 	},
 	{
 		name: 'Profile',

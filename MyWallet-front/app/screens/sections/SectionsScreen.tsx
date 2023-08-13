@@ -3,7 +3,7 @@ import { Text, View } from 'react-native'
 
 import Layout from '@ui/layout/Layout'
 
-const SettingsScreen = () => {
+const SectionsScreen = () => {
 	const route = useRoute()
 
 	return (
@@ -16,4 +16,4 @@ const SettingsScreen = () => {
 	)
 }
 
-export default SettingsScreen
+export default SectionsScreen

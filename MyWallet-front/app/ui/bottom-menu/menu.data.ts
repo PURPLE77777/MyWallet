@@ -12,8 +12,8 @@ export const menuItemData: IMenuItemData[] = [
 		iconName: ICONS.Statistics
 	},
 	{
-		path: 'Settings',
-		iconName: ICONS.Settings
+		path: 'SectionsCnf',
+		iconName: ICONS.SectionsCnf
 	},
 	{
 		path: 'Profile',

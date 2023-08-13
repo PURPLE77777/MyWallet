@@ -13,6 +13,7 @@
 		"^@providers/(.*)$",
 		"^@constants/(.*)$",
 		"^@screens/(.*)$",
+		"^@assets/(.*)$",
 		"^@types/(.*)$",
 		"^@hooks/(.*)$",
 		"^@ui/(.*)$",

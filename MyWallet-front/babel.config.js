@@ -28,6 +28,10 @@ module.exports = function (api) {
 							rootPathPrefix: '@ui/'
 						},
 						{
+							rootPathSuffix: './app/assets/',
+							rootPathPrefix: '@assets/'
+						},
+						{
 							rootPathSuffix: './app/providers/',
 							rootPathPrefix: '@providers/'
 						}
