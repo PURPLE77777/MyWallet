@@ -1,12 +1,14 @@
+import { RootStackParamList } from '@navigation/navigation.types'
+
 import { IIcons } from '@ui/icons/icons.interface'
+
+type IconNames = Omit<RootStackParamList, 'Auth'>
 
 // type IconNames = Omit<RootStackParamList, 'Auth'>
 
-type IconNames = 'Wallets' | 'Settings' | 'Profile' | 'Statistics'
-
-export const ICONS: Record<IconNames, IIcons> = {
+export const ICONS: Record<keyof IconNames, IIcons> = {
 	Wallets: 'credit-card-multiple',
-	Settings: 'settings',
+	SectionsCnf: 'settings',
 	Profile: 'account',
-	Statistics: 'sliders'
+	Statistics: 'circular-graph'
 }

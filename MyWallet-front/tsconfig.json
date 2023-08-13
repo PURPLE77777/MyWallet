@@ -10,6 +10,7 @@
 			"@hooks/*": ["./hooks/*"],
 			"@navigation/*": ["./navigation/*"],
 			"@providers/*": ["./providers/*"],
+			"@assets/*": ["./assets"],
 			"@ui/*": ["./ui/*"]
 		}
 	}

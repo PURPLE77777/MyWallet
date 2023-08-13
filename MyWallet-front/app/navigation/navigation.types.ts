@@ -2,7 +2,7 @@ import { ComponentType } from 'react'
 
 export type RootStackParamList = {
 	Wallets: undefined
-	Settings: undefined
+	SectionsCnf: undefined
 	Auth: undefined
 	Profile: undefined
 	Statistics: undefined
@@ -10,7 +10,7 @@ export type RootStackParamList = {
 }
 
 export interface IRoute {
-	name: keyof RootStackParamList
+	name: keyof Omit<RootStackParamList, 'Auth'>
 	component: ComponentType
 }
 

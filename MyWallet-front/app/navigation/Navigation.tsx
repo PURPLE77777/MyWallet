@@ -2,11 +2,13 @@ import {
 	NavigationContainer,
 	useNavigationContainerRef
 } from '@react-navigation/native'
+// import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState } from 'react'
-import { ActivityIndicator, Text, View } from 'react-native'
+import { ActivityIndicator, Image, Text, View } from 'react-native'
 
 import { COLORS } from '@constants/colors.constants'
 
+import { useAuth } from '@hooks/useAuth'
 import { useFonts } from '@hooks/useFonts'
 
 import BottomMenu from '@ui/bottom-menu/BottomMenu'
@@ -19,17 +21,21 @@ const Navigation = () => {
 		undefined
 	)
 
+	const { user } = useAuth()
+
 	const navigation = useNavigationContainerRef()
 
 	useEffect(() => {
 		const loadFonts = async () => {
+			// await SplashScreen.preventAutoHideAsync()
 			try {
 				await useFonts()
-				await new Promise(resolve => setTimeout(resolve, 2000))
+				await new Promise(resolve => setTimeout(resolve, 3000))
 			} catch (e) {
 				console.warn(e)
 			} finally {
 				setIsFontLoaded(true)
+				// await SplashScreen.hideAsync()
 			}
 		}
 
@@ -42,13 +48,15 @@ const Navigation = () => {
 
 	if (!isFontLoaded) {
 		return (
+			// null for Splash screen
 			<View className='flex-1 items-center justify-center bg-primaryLightGray'>
+				<Text className='text-3xl text-white'>Loading...</Text>
 				<ActivityIndicator
-					animating={isFontLoaded}
+					animating={!isFontLoaded} //
 					size='large'
 					color={COLORS.primaryPurple}
 				/>
-				<Text className='text-3xl text-white'>Loading...</Text>
+				<Image source={require('../assets/images/wallet.gif')} />
 			</View>
 		)
 	}
@@ -63,7 +71,7 @@ const Navigation = () => {
 				<PrivateNavigation />
 			</NavigationContainer>
 
-			{currentRoute && (
+			{currentRoute && true && (
 				<BottomMenu
 					navigate={navigation.navigate}
 					currentRoute={currentRoute}

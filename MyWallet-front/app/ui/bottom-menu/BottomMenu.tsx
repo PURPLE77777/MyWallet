@@ -8,21 +8,22 @@ import { menuItemData } from './menu.data'
 
 interface IBottonMenu {
 	navigate: TypeNavigate
-	currentRoute: string
+	currentRoute?: string
 }
 
 const BottomMenu: FC<IBottonMenu> = ({ navigate, currentRoute }) => {
 	return (
 		<View className='flex-row'>
-			{menuItemData.map((item, i) => (
-				<MenuItem
-					item={item}
-					key={`${item.path}-${i}}`}
-					num={i}
-					navigate={navigate}
-					currentRoute={currentRoute}
-				/>
-			))}
+			{currentRoute &&
+				menuItemData.map((item, i) => (
+					<MenuItem
+						item={item}
+						key={`${item.path}-${i}}`}
+						num={i}
+						navigate={navigate}
+						currentRoute={currentRoute}
+					/>
+				))}
 		</View>
 	)
 }

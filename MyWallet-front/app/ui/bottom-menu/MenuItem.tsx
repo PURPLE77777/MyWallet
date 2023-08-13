@@ -33,19 +33,20 @@ const MenuItem: FC<IMenuItem> = ({ item, num, currentRoute, navigate }) => {
 		<TouchableHighlight
 			className={cn(
 				'h-[50px] w-[25%] items-center justify-center',
-				num == 0
-					? 'bg-primaryLightGray'
-					: num == 1
-					? 'bg-primaryDarkGray'
-					: num == 2
-					? 'bg-primaryGreen'
-					: num == 3
-					? 'bg-primaryPurple'
-					: ''
+				'bg-primaryLightGray'
+				// num == 0
+				// 	? 'bg-primaryLightGray'
+				// 	: num == 1
+				// 	? 'bg-primaryDarkGray'
+				// 	: num == 2
+				// 	? 'bg-primaryGreen'
+				// 	: num == 3
+				// 	? 'bg-primaryPurple'
+				// 	: ''
 			)}
 			onPress={() => nav(item.path)}
 		>
-			<Icon iconName={item.iconName} color={colors[num]} />
+			<Icon name={item.iconName} color={colors[0]} />
 		</TouchableHighlight>
 	)
 }

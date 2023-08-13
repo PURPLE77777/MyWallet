@@ -1,129 +1,133 @@
-import { ParamListBase, useNavigation } from '@react-navigation/native'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { useEffect, useState } from 'react'
 import {
-	FlatList,
+	Dimensions,
+	Platform,
 	StyleSheet,
 	Text,
-	TouchableOpacity,
 	View,
 	useWindowDimensions
 } from 'react-native'
+import Carousel, { Pagination, ParallaxImage } from 'react-native-snap-carousel'
 
-import PlusAddAccount from '../assets/plus-add_account.svg'
+// import cn from 'clsx'
 
-interface IProduct {
-	id: number
+const ENTRIES1 = [
+	{
+		title: 'Beautiful and dramatic Antelope Canyon',
+		subtitle: 'Lorem ipsum dolor sit amet et nuncat mergitur',
+		illustration: 'https://i.imgur.com/UYiroysl.jpg'
+	},
+	{
+		title: 'Earlier this morning, NYC',
+		subtitle: 'Lorem ipsum dolor sit amet',
+		illustration: 'https://i.imgur.com/UPrs1EWl.jpg'
+	},
+	{
+		title: 'White Pocket Sunset',
+		subtitle: 'Lorem ipsum dolor sit amet et nuncat ',
+		illustration: 'https://i.imgur.com/MABUbpDl.jpg'
+	},
+	{
+		title: 'Acrocorinth, Greece',
+		subtitle: 'Lorem ipsum dolor sit amet et nuncat mergitur',
+		illustration: 'https://i.imgur.com/KZsmUi2l.jpg'
+	},
+	{
+		title: 'The lone tree, majestic landscape of New Zealand',
+		subtitle: 'Lorem ipsum dolor sit amet',
+		illustration: 'https://i.imgur.com/2nCt3Sbl.jpg'
+	}
+]
+const { width: screenWidth } = Dimensions.get('window')
+
+type ItemProps = {
 	title: string
-	price: number
-	category: string
-	description: string
-	image: string
+	subtitle: string
+	illustration: string
 }
 
-const CarouselView = ({ data }: { data: IProduct[] }) => {
-	const { width: screenWidth, height: screnHeight } = useWindowDimensions()
-	const navigator = useNavigation<NativeStackNavigationProp<ParamListBase>>()
+const CarouselView = () => {
+	const [entries, setEntries] = useState<ItemProps[]>([])
+	const { width: screenWidth } = useWindowDimensions()
+	const [activeSlide, setActiveSlide] = useState<number>(0)
 
-	const addAccount = () => {
-		navigator.navigate('AddAccount')
-	}
+	useEffect(() => {
+		setEntries(ENTRIES1)
+	}, [])
 
-	const carouselItemView = ({ item }: { item: IProduct }) => {
+	const renderItem = ({ item }: { item: ItemProps }, parallaxProps) => {
 		return (
-			<View
-				style={[styles.carouselItem, { width: screenWidth }]}
-				key={item.id.toString()}
-			>
-				<TouchableOpacity
-					style={[styles.imageWrapper, { width: screenWidth - 100 }]}
-					onPress={addAccount}
+			<View style={styles.item}>
+				<ParallaxImage
+					source={{ uri: item.illustration }}
+					containerStyle={styles.imageContainer}
+					style={styles.image}
+					parallaxFactor={0.4}
+					{...parallaxProps}
+				/>
+				<Text
+					className='absolute left-0 top-[100px] bg-[#0000006d] text-white'
+					numberOfLines={2}
 				>
-					<Text style={styles.title}>{item.title}</Text>
-					{/* <ImageBackground style={[styles.image]} source={{ uri: item.image }}>
-					</ImageBackground> */}
-				</TouchableOpacity>
+					{item.title}
+				</Text>
 			</View>
 		)
 	}
 
-	return data.length ? (
-		<FlatList
-			style={[styles.carousel, { width: screenWidth }]}
-			horizontal
-			data={data}
-			renderItem={carouselItemView}
-			pagingEnabled
-		/>
-	) : (
-		<View style={[styles.addAccount]}>
-			<TouchableOpacity
-				style={[styles.addAccountItem, { width: screenWidth - 100 }]}
-				onPress={addAccount}
-			>
-				{/* <Image
-					source={require('../assets/plus-add_accounnt.svg')}
-					style={styles.addAccountImage}
-				/> */}
-				<PlusAddAccount
-					style={styles.addAccountImage}
-					width={100}
-					height={100}
-					fill={'orange'}
-					// fillOpacity={0.5}
-				/>
-				<Text style={styles.title}>Add Account</Text>
-				{/* <ImageBackground style={[styles.image]} source={{ uri: item.image }}>
-			</ImageBackground> */}
-			</TouchableOpacity>
+	return (
+		<View className='items-center justify-center'>
+			<Carousel
+				sliderWidth={screenWidth}
+				sliderHeight={screenWidth}
+				itemWidth={screenWidth - 60}
+				data={entries}
+				// eslint-disable-next-line
+				// @ts-ignore
+				renderItem={renderItem}
+				hasParallaxImages={true}
+				onSnapToItem={index => setActiveSlide(index)}
+			/>
+			<Pagination
+				dotsLength={entries.length}
+				activeDotIndex={activeSlide}
+				// containerStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.75)' }}
+				dotStyle={{
+					width: 10,
+					height: 10,
+					borderRadius: 5,
+					marginHorizontal: 8,
+					backgroundColor: 'rgba(255, 255, 255, 0.92)'
+				}}
+				inactiveDotStyle={
+					{
+						// Define styles for inactive dots here
+					}
+				}
+				inactiveDotOpacity={0.4}
+				inactiveDotScale={0.6}
+			/>
 		</View>
 	)
 }
 
 const styles = StyleSheet.create({
-	carousel: {
-		height: 250,
-		flexGrow: 0
+	container: {
+		flex: 1
 	},
-	carouselItem: {
-		backgroundColor: '#261D32',
-		justifyContent: 'center',
-		alignItems: 'center'
+	item: {
+		width: screenWidth - 60,
+		height: screenWidth - 60
 	},
-	imageWrapper: {
-		height: 200,
-		backgroundColor: '#6aa84f',
-		borderRadius: 30,
-		overflow: 'hidden',
-		justifyContent: 'center'
+	imageContainer: {
+		flex: 1,
+		marginBottom: Platform.select({ ios: 0, android: 1 }),
+		backgroundColor: 'white',
+		borderRadius: 8
 	},
 	image: {
-		flex: 1,
-		resizeMode: 'cover',
-		justifyContent: 'center'
-	},
-	title: {
-		color: 'pink',
-		fontWeight: 'bold',
-		fontSize: 20,
-		textAlign: 'center',
-		textShadowColor: 'black'
-	},
-	addAccount: {
-		height: 250,
-		width: '100%',
-		backgroundColor: '#261D32',
-		justifyContent: 'center',
-		alignItems: 'center'
-	},
-	addAccountItem: {
-		backgroundColor: '#7700FF',
-		alignItems: 'center',
-		borderRadius: 15
-	},
-	addAccountImage: {
-		flex: 1,
-		resizeMode: 'contain'
-		// backgroundColor: 'white'
+		...StyleSheet.absoluteFillObject,
+		resizeMode: 'cover'
 	}
 })
 
