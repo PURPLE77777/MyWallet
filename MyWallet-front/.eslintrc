@@ -28,6 +28,7 @@
 		"react/prop-types": "warn",
 		"no-empty": "warn",
 		"unused-imports/no-unused-imports": "warn",
-		"prefer-const": "warn"
+		"prefer-const": "warn",
+		"eqeqeq": "warn"
 	}
 }

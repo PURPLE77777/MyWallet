@@ -2,14 +2,18 @@ import cn from 'clsx'
 import { useEffect, useState } from 'react'
 import { ScrollView, Text, View } from 'react-native'
 
-import TRANSACTIONS_BY_DAY, { ITransactionsData } from './transactions.constant'
+import { generateRandomTransactionData } from '@constants/transactions.constant'
+
+import { ITransactionsData } from '@AppTypes/transactions.interface'
 
 const LastTransactions = () => {
 	const [transactions, setTransactions] = useState<ITransactionsData[]>([])
 
 	useEffect(() => {
+		const data = generateRandomTransactionData()
+
 		const copyTrans: ITransactionsData[] = JSON.parse(
-			JSON.stringify(TRANSACTIONS_BY_DAY)
+			JSON.stringify(data.transactions)
 		)
 		const sortedTrans = copyTrans.sort((first, sec) => {
 			const firstDate = new Date(first.date)
