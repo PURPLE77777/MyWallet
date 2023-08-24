@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  wallets   Wallet[]
+  sections  Section[]
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Wallet {
+  id           Int           @id @default(autoincrement())
+  name         String
+  account      Int
+  user         User          @relation(fields: [userId], references: [id])
+  userId       Int           @map("user_id")
+  sections     Section[]
+  transactions Transaction[]
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @default(now()) @updatedAt @map("updated_at")
+
+  @@map("wallets")
+}
+
+model Section {
+  id           Int                 @id @default(autoincrement())
+  name         String
+  type         EnumTypeTransaction
+  user         User                @relation(fields: [userId], references: [id])
+  userId       Int                 @map("user_id")
+  wallet       Wallet              @relation(fields: [walletId], references: [id])
+  walletId     Int                 @map("wallet_id")
+  transactions Transaction[]
+  createdAt    DateTime            @default(now()) @map("created_at")
+  updatedAt    DateTime            @default(now()) @updatedAt @map("updated_at")
+
+  @@map("sections")
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  amount    Int
+  wallet    Wallet   @relation(fields: [walletId], references: [id])
+  walletId  Int      @map("wallet_id")
+  section   Section  @relation(fields: [sectionId], references: [id])
+  sectionId Int      @map("section_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("transactions")
+}
+
+enum EnumTypeTransaction {
+  GAIN
+  EXPENSE
+}
