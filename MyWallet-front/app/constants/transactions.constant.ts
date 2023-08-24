@@ -56,7 +56,7 @@ const getRandomGainSection = () => {
 	return sectionsGains[randomIndex]
 }
 
-const getRandomColor = (): string => {
+export const getRandomColor = (): string => {
 	const letters = '0123456789ABCDEF'
 	let color = '#'
 	for (let i = 0; i < 6; i++) {
