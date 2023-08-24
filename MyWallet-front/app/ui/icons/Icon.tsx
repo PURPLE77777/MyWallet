@@ -1,6 +1,11 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { Ionicons } from '@expo/vector-icons'
-import { Entypo } from '@expo/vector-icons'
+import {
+	AntDesign,
+	Entypo,
+	FontAwesome5,
+	Fontisto,
+	Ionicons,
+	MaterialCommunityIcons
+} from '@expo/vector-icons'
 import { FC } from 'react'
 
 import { ICONS } from '@constants/icons.constants'
@@ -8,7 +13,7 @@ import { ICONS } from '@constants/icons.constants'
 import { IIcons } from './icons.interface'
 
 interface IconsProps {
-	name: IIcons
+	name: IIcons | string
 	size?: number
 	color?: string
 }
@@ -21,15 +26,26 @@ const Icon: FC<IconsProps> = (props): JSX.Element => {
 	if (!propsObj.color) propsObj.color = 'black'
 
 	switch (propsObj.name) {
-		case ICONS.Wallets:
-			return <MaterialCommunityIcons {...propsObj} />
-		case ICONS.SectionsCnf:
-			return <Ionicons {...propsObj} />
-		case ICONS.Profile:
-			return <MaterialCommunityIcons {...propsObj} />
 		case ICONS.Statistics:
 			return <Entypo {...propsObj} />
+		case 'heartbeat':
+			return <FontAwesome5 {...propsObj} />
+		case 'wallet':
+			return <Fontisto {...propsObj} />
+		case 'pluscircle':
+			return <AntDesign {...propsObj} />
+		case 'home':
+		case 'gift-outline':
+		case ICONS.SectionsCnf:
+			return <Ionicons {...propsObj} />
+		case ICONS.Wallets:
+		case ICONS.Profile:
+		case 'food-fork-drink':
+		case 'hand-coin-outline':
+		case 'sack-percent':
+			return <MaterialCommunityIcons {...propsObj} />
 		default:
+			propsObj.name = 'file-question-outline'
 			return <MaterialCommunityIcons {...propsObj} />
 	}
 }

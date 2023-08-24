@@ -26,7 +26,7 @@ const MenuItem: FC<IMenuItem> = ({ item, num, currentRoute, navigate }) => {
 	]
 
 	const nav = (name: keyof RootStackParamList) => {
-		if (currentRoute != name) navigate(name)
+		if (currentRoute !== name) navigate(name)
 	}
 
 	return (

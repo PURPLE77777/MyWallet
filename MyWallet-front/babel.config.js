@@ -34,6 +34,10 @@ module.exports = function (api) {
 						{
 							rootPathSuffix: './app/providers/',
 							rootPathPrefix: '@providers/'
+						},
+						{
+							rootPathSuffix: './app/types/',
+							rootPathPrefix: '@AppTypes/'
 						}
 					]
 				}

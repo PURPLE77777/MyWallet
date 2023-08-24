@@ -62,7 +62,6 @@ const AuthScreen = () => {
 								)}
 								placeholder='Enter email'
 								placeholderTextColor={COLORS.gray75}
-								value={value}
 								onBlur={onBlur}
 								onChangeText={onChange}
 							/>
@@ -94,7 +93,6 @@ const AuthScreen = () => {
 								)}
 								placeholder='Enter password'
 								placeholderTextColor={COLORS.gray75}
-								value={value}
 								onBlur={onBlur}
 								onChangeText={onChange}
 							/>
