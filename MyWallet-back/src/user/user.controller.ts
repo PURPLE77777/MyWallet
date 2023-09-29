@@ -1,32 +1,15 @@
-import {
-	Body,
-	Controller,
-	Get,
-	Post,
-	UsePipes,
-	ValidationPipe
-} from '@nestjs/common'
-import { LogUserDto, RegUserDto } from './user.dto'
+import { Controller, Get } from '@nestjs/common'
+import { Auth } from 'src/decorators/auth.decorator'
+import { CurrentUser } from 'src/decorators/user.decorator'
 import { UserService } from './user.service'
 
-@Controller('users')
+@Controller('user')
 export class UserController {
 	constructor(private readonly userService: UserService) {}
 
+	@Auth()
 	@Get()
-	async getAllUsers() {
-		return this.userService.getAllUsers()
-	}
-
-	@Post('register')
-	@UsePipes(new ValidationPipe())
-	async register(@Body() dto: RegUserDto) {
-		return this.userService.register(dto)
-	}
-
-	@Post('login')
-	@UsePipes(new ValidationPipe())
-	async login(@Body() dto: LogUserDto) {
-		return this.userService.login(dto)
+	getWallets(@CurrentUser('id') userId: number) {
+		return this.userService.getWallets(userId)
 	}
 }

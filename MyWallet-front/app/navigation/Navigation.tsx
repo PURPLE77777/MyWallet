@@ -30,7 +30,7 @@ const Navigation = () => {
 			// await SplashScreen.preventAutoHideAsync()
 			try {
 				await useFonts()
-				await new Promise(resolve => setTimeout(resolve, 3000))
+				await new Promise(resolve => setTimeout(resolve, 1000))
 			} catch (e) {
 				console.warn(e)
 			} finally {
@@ -71,7 +71,7 @@ const Navigation = () => {
 				<PrivateNavigation />
 			</NavigationContainer>
 
-			{currentRoute && true && (
+			{currentRoute && user && (
 				<BottomMenu
 					navigate={navigation.navigate}
 					currentRoute={currentRoute}

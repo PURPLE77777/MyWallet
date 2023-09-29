@@ -23,7 +23,7 @@ const PrivateNavigation: FC = () => {
 				// statusBarColor: ''
 			}}
 		>
-			{true ? (
+			{user ? (
 				routes.map(route => (
 					<Stack.Screen
 						name={route.name}

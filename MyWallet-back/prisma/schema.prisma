@@ -8,23 +8,21 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  name      String
-  email     String    @unique
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
   password  String
   wallets   Wallet[]
-  sections  Section[]
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@map("users")
 }
 
 model Wallet {
   id           Int           @id @default(autoincrement())
-  name         String
-  account      Int
-  user         User          @relation(fields: [userId], references: [id])
+  name         String        @unique
+  account      Int           @default(0)
+  user         User          @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   userId       Int           @map("user_id")
   sections     Section[]
   transactions Transaction[]
@@ -36,11 +34,12 @@ model Wallet {
 
 model Section {
   id           Int                 @id @default(autoincrement())
-  name         String
+  name         String              @unique
   type         EnumTypeTransaction
-  user         User                @relation(fields: [userId], references: [id])
-  userId       Int                 @map("user_id")
-  wallet       Wallet              @relation(fields: [walletId], references: [id])
+  amount       Int                 @default(0)
+  icon         String
+  color        String
+  wallet       Wallet              @relation(fields: [walletId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   walletId     Int                 @map("wallet_id")
   transactions Transaction[]
   createdAt    DateTime            @default(now()) @map("created_at")
@@ -52,7 +51,7 @@ model Section {
 model Transaction {
   id        Int      @id @default(autoincrement())
   amount    Int
-  wallet    Wallet   @relation(fields: [walletId], references: [id])
+  wallet    Wallet   @relation(fields: [walletId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   walletId  Int      @map("wallet_id")
   section   Section  @relation(fields: [sectionId], references: [id])
   sectionId Int      @map("section_id")

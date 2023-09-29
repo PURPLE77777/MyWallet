@@ -1,37 +1,32 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
 
 import Navigation from '@navigation/Navigation'
 
-import AuthProvider from '@providers/auth/AuthProvider'
+import { persistor, store } from '@store/store'
+
+const client = new QueryClient({
+	defaultOptions: {
+		queries: {
+			retry: false,
+			refetchOnWindowFocus: false
+		}
+	}
+})
 
 export default function App() {
 	return (
-		<AuthProvider>
-			<SafeAreaProvider>
-				<Navigation />
-				{/* <StatusBar style='dark' translucent={true} hidden={false} /> */}
-			</SafeAreaProvider>
-		</AuthProvider>
-		// 	<NavigationContainer>
-		// 	<Stack.Navigator
-		// 		initialRouteName='Main'
-		// 		screenOptions={{
-		// 			// headerShown: false,
-		// 			headerTintColor: 'white',
-		// 			headerStyle: {
-		// 				backgroundColor: '#5B04AC'
-		// 			}
-		// 		}}
-		// 	>
-		// 		<Stack.Screen name='Settings' component={SettingsScreen} />
-		// 		<Stack.Screen
-		// 			name='Main'
-		// 			component={MainScreen}
-		// 			// options={{ headerShown: false }}
-		// 		/>
-
-		// 		<Stack.Screen name='AddAccount' component={AddAccountScreen} />
-		// 	</Stack.Navigator>
-		// </NavigationContainer>
+		<QueryClientProvider client={client}>
+			<Provider store={store}>
+				<PersistGate loading={null} persistor={persistor}>
+					<SafeAreaProvider>
+						<Navigation />
+						{/* <StatusBar style='dark' translucent={true} hidden={false} /> */}
+					</SafeAreaProvider>
+				</PersistGate>
+			</Provider>
+		</QueryClientProvider>
 	)
 }

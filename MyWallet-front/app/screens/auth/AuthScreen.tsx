@@ -9,26 +9,30 @@ import {
 	TouchableOpacity,
 	View
 } from 'react-native'
-import { IAuth } from 'types/auth.interface'
 
 import { COLORS } from '@constants/colors.constants'
 
+import { INamePassword } from '@store/user/user.interface'
+
+import { useActions } from '@hooks/useActions'
 import { useAuth } from '@hooks/useAuth'
 
-import { validEmail } from './email.rgx'
-
 const AuthScreen = () => {
-	const { setUser } = useAuth()
+	const { user, error } = useAuth()
+
+	const { login, register } = useActions()
 
 	const {
 		control,
 		handleSubmit,
 		formState: { errors }
-	} = useForm<IAuth>({ mode: 'onChange' })
+	} = useForm<INamePassword>({ mode: 'onChange' })
 
 	const [isSignIn, setIsSignIn] = useState(true)
 
-	const onSubmit = (data: IAuth) => setUser({ id: '', ...data }) // console.log(data) //
+	const onSubmit = (data: INamePassword) => {
+		isSignIn ? login(data) : register(data)
+	}
 
 	return (
 		<Pressable
@@ -42,13 +46,10 @@ const AuthScreen = () => {
 				</Text>
 				<Controller
 					control={control}
-					name='email'
+					name='name'
 					rules={{
-						required: 'Email is required',
-						pattern: {
-							value: validEmail,
-							message: 'Your email is invalid!'
-						}
+						required: 'Name is required',
+						minLength: { message: 'Minimum of 2 symbols', value: 2 }
 					}}
 					render={({
 						field: { value, onBlur, onChange },
@@ -60,7 +61,7 @@ const AuthScreen = () => {
 									'mt-5 w-3/4 rounded-md border-[3px] border-solid border-primaryPurple px-5 py-2 text-lg text-white',
 									error ? 'border-red-500' : ''
 								)}
-								placeholder='Enter email'
+								placeholder='Enter name'
 								placeholderTextColor={COLORS.gray75}
 								onBlur={onBlur}
 								onChangeText={onChange}
@@ -104,6 +105,7 @@ const AuthScreen = () => {
 						</>
 					)}
 				/>
+				{error && <Text className='mt-4 text-red-600'>{error.message}</Text>}
 				<View className='mt-7 w-3/4 flex-row justify-center align-baseline'>
 					<TouchableOpacity
 						className='h-[40px] w-[120px] justify-center rounded-full bg-primaryPurple'

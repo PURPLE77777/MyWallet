@@ -1,29 +1,47 @@
-import cn from 'clsx'
-import { useEffect, useState } from 'react'
-import { ScrollView, Text, View } from 'react-native'
+import { useQuery } from '@tanstack/react-query'
+import clsx from 'clsx'
+import { FC } from 'react'
+import { ScrollView, View } from 'react-native'
 
-import { generateRandomTransactionData } from '@constants/transactions.constant'
+import { EnumTransactionSort } from '@services/transaction/transaction.dto'
+import TransactionService from '@services/transaction/transaction.service'
 
-import { ITransactionsData } from '@AppTypes/transactions.interface'
+import { IWallet } from '@AppTypes/waller.interface'
 
-const LastTransactions = () => {
-	const [transactions, setTransactions] = useState<ITransactionsData[]>([])
+import Icon from '@ui/icons/Icon'
+import Txt from '@ui/text/Txt'
 
-	useEffect(() => {
-		const data = generateRandomTransactionData()
+interface ILastTransactions {
+	wallet: IWallet
+}
 
-		const copyTrans: ITransactionsData[] = JSON.parse(
-			JSON.stringify(data.transactions)
-		)
-		const sortedTrans = copyTrans.sort((first, sec) => {
-			const firstDate = new Date(first.date)
-			const secDate = new Date(sec.date)
-			if (firstDate.getTime() > secDate.getTime()) return -1
-			else if (firstDate.getTime() < secDate.getTime()) return 1
-			else return 0
-		})
-		setTransactions(sortedTrans.slice(0, 7))
-	}, [])
+const LastTransactions: FC<ILastTransactions> = ({ wallet }) => {
+	const { data, isFetching } = useQuery({
+		queryKey: ['last_transactions', wallet.id],
+		queryFn: async () => {
+			const response = await TransactionService.getAll(wallet.id, {
+				sort: EnumTransactionSort.NEWEST,
+				perPage: 5,
+				page: 1
+			})
+			return response
+		}
+	})
+	console.log(wallet.name, data, isFetching)
+
+	const formatDate = (date: Date) => {
+		const year = date.getFullYear(),
+			month = date.getMonth() + 1,
+			day = date.getDate(),
+			hour = date.getHours(),
+			minute = date.getMinutes()
+
+		return `${day > 9 ? day : `0${day}`}.${
+			month > 9 ? month : `0${month}`
+		}.${year} ${hour > 9 ? hour : `0${hour}`}:${
+			minute > 9 ? minute : `0${minute}`
+		}`
+	}
 
 	const monthsRu = [
 		'января',
@@ -41,54 +59,43 @@ const LastTransactions = () => {
 	]
 
 	return (
-		<ScrollView className='mx-5 h-[250px] rounded-[10px] bg-primaryLightGray px-3'>
-			{transactions.map((transaction, ind) => {
-				const gains = transaction.gains.reduce(
-					(prev, gain) => prev + gain.amount,
-					0
-				)
-				const expenses = transaction.expenses.reduce(
-					(prev, expense) => prev + expense.amount,
-					0
-				)
-
-				const result = gains - expenses
-
-				const transDate = new Date(transaction.date)
-
-				return (
+		<ScrollView className='mx-5 mt-5 h-[250px] rounded-[10px] bg-primaryLightGray px-3'>
+			{data?.map(
+				(
+					{ amount, id, createdAt, section: { type, name, icon, color } },
+					index
+				) => (
 					<View
-						className='rounded-md border-[3px] border-solid border-transparent'
-						key={`transaction-${ind}`}
+						className='flex-row items-center justify-between'
+						key={`last_transactions-${id}`}
 					>
-						<Text className='text-center font-comfortaa text-lg text-white'>
-							{`${transDate.getDate()} ${
-								monthsRu[transDate.getMonth()]
-							} ${transDate.getFullYear()}`}
-						</Text>
-						<View className='flex-row justify-between'>
-							<Text className='font-comfortaa text-lg text-white'>
-								{result > 0 ? 'Up' : result < 0 ? 'Down' : 'No changes'}
-							</Text>
-
-							{/* Graphic */}
-
-							<Text
-								className={cn(
-									'font-comfortaa text-lg',
-									result > 0
-										? 'text-primaryGreen'
-										: result < 0
-										? 'text-primatyRed'
-										: 'text-gray-400'
+						<View className={color}>
+							<Icon name={icon} size={40} />
+						</View>
+						<View
+							className={clsx(
+								'ml-4 flex-grow flex-row items-center justify-between py-2',
+								index !== data.length - 1
+									? 'border-b-2 border-solid border-white'
+									: ''
+							)}
+						>
+							<View>
+								<Txt className='text-sm'>{formatDate(new Date(createdAt))}</Txt>
+								<Txt className='text-sm'>{name}</Txt>
+							</View>
+							<Txt
+								className={clsx(
+									'font-comfortaaBold',
+									type === 'GAIN' ? 'text-primaryGreen' : 'text-primatyRed'
 								)}
 							>
-								{result > 0 ? `+${result} BYN` : `${result} BYN`}
-							</Text>
+								{type === 'GAIN' ? amount : '-' + amount}
+							</Txt>
 						</View>
 					</View>
 				)
-			})}
+			)}
 		</ScrollView>
 	)
 }

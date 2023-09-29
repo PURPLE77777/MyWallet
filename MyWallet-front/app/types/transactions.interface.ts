@@ -1,12 +1,19 @@
 export interface ITransaction {
-	id: string
+	id: number
 	amount: number
 	section: string
-	color: string
+	createdAt: Date
+	// color: string
 }
 
 export interface ITransactionsData {
-	date: Date
-	gains: ITransaction[]
-	expenses: ITransaction[]
+	id: number
+	amount: number
+	section: {
+		type: string
+		name: string
+		icon: string
+		color: string
+	}
+	createdAt: Date
 }

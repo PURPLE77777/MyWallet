@@ -12,10 +12,13 @@
 		"^@navigation/(.*)$",
 		"^@providers/(.*)$",
 		"^@constants/(.*)$",
+		"^@services/(.*)$",
 		"^@screens/(.*)$",
 		"^@assets/(.*)$",
 		"^@AppTypes/(.*)$",
+		"^@store/(.*)$",
 		"^@hooks/(.*)$",
+		"^@api/(.*)$",
 		"^@ui/(.*)$",
 		"^../(.*)$",
 		"^./(.*)$"
