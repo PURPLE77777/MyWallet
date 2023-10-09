@@ -20,10 +20,11 @@ model User {
 
 model Wallet {
   id           Int           @id @default(autoincrement())
-  name         String        @unique
+  name         String
   account      Int           @default(0)
   user         User          @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   userId       Int           @map("user_id")
+  image        String?
   sections     Section[]
   transactions Transaction[]
   createdAt    DateTime      @default(now()) @map("created_at")
@@ -34,7 +35,7 @@ model Wallet {
 
 model Section {
   id           Int                 @id @default(autoincrement())
-  name         String              @unique
+  name         String
   type         EnumTypeTransaction
   amount       Int                 @default(0)
   icon         String

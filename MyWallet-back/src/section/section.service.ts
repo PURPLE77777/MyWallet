@@ -35,7 +35,7 @@ export class SectionService {
 
 		if (!isWalletExist) throw new BadRequestException('No such wallet')
 
-		const oldSection = await this.prisma.section.findUnique({
+		const oldSection = await this.prisma.section.findFirst({
 			where: {
 				name: dto.name,
 				walletId
@@ -60,7 +60,7 @@ export class SectionService {
 	}
 
 	async update(walletId: number, dto: SectionDto) {
-		const section = await this.prisma.section.findUnique({
+		const section = await this.prisma.section.findFirst({
 			where: {
 				walletId,
 				name: dto.name
@@ -69,7 +69,7 @@ export class SectionService {
 
 		if (!section) throw new NotFoundException('Now such section')
 
-		return this.prisma.section.update({
+		return this.prisma.section.updateMany({
 			where: {
 				walletId,
 				name: dto.name
@@ -81,7 +81,7 @@ export class SectionService {
 	}
 
 	async delete(walletId: number, sectionName: string) {
-		return this.prisma.section.delete({
+		return this.prisma.section.deleteMany({
 			where: {
 				walletId,
 				name: sectionName

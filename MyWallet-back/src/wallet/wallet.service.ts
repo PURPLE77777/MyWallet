@@ -12,8 +12,9 @@ export class WalletService {
 	constructor(private readonly prisma: PrismaService) {}
 
 	async create(userId: number, dto: WalletDto) {
-		const oldWallet = await this.prisma.wallet.findUnique({
+		const oldWallet = await this.prisma.wallet.findFirst({
 			where: {
+				userId,
 				name: dto.name
 			}
 		})
@@ -72,7 +73,7 @@ export class WalletService {
 		wallet: string,
 		selectProps: Prisma.WalletInclude = {}
 	) {
-		return this.prisma.wallet.findUnique({
+		return this.prisma.wallet.findFirst({
 			where: {
 				userId,
 				name: wallet

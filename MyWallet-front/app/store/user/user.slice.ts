@@ -31,7 +31,6 @@ export const userSlice = createSlice({
 				state.isLoading = false
 			})
 			.addCase(login.rejected, (state, { payload }) => {
-				state.user = null
 				state.isLoading = false
 				state.error = payload as IUserError
 			})
@@ -44,7 +43,6 @@ export const userSlice = createSlice({
 				state.isLoading = false
 			})
 			.addCase(register.rejected, (state, { payload }) => {
-				state.user = null
 				state.isLoading = false
 				state.error = payload as IUserError
 			})

@@ -7,6 +7,8 @@ import Navigation from '@navigation/Navigation'
 
 import { persistor, store } from '@store/store'
 
+// import { persistor, store } from '@store/store'
+
 const client = new QueryClient({
 	defaultOptions: {
 		queries: {

@@ -52,7 +52,7 @@ const Navigation = () => {
 			<View className='flex-1 items-center justify-center bg-primaryLightGray'>
 				<Text className='text-3xl text-white'>Loading...</Text>
 				<ActivityIndicator
-					animating={!isFontLoaded} //
+					animating={!isFontLoaded}
 					size='large'
 					color={COLORS.primaryPurple}
 				/>

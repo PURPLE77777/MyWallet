@@ -28,6 +28,6 @@ export class AuthController {
 	@Post('check-auth')
 	@UsePipes(new ValidationPipe())
 	checkAuth(@Body() dto: TokenDto) {
-		this.authService.checkAuth(dto)
+		return this.authService.checkAuth(dto)
 	}
 }

@@ -7,6 +7,7 @@ import { IWallet } from '@AppTypes/waller.interface'
 // }
 
 export interface IWalletInitialState {
+	selectedWallet: IWallet | null
 	wallets: IWallet[] | null
 	isLoading: boolean
 	error: any

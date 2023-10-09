@@ -107,7 +107,7 @@ const createData = async (
 	transactionId = 5
 
 	console.log('creating sections...')
-	dubs = []
+	const dubls: Record<number, string[]> = {}
 	for (let i = 0; i < countSections; i++) {
 		const type = Math.random() < 0.65 ? 'EXPENSE' : 'GAIN'
 		const name =
@@ -119,11 +119,19 @@ const createData = async (
 						Math.floor(Math.random() * sectionsGains.length)
 				  ]
 
-		if (dubs.includes(name)) {
+		const randomWalletId = faker.number.int({
+			min: walletId,
+			max: walletId + countWallets - 1
+		})
+
+		if (dubls[randomWalletId]?.includes(name)) {
 			i--
 			continue
 		}
-		dubs.push(name)
+
+		dubls[randomWalletId]
+			? dubls[randomWalletId].push(name)
+			: (dubls[randomWalletId] = [name])
 
 		const trans = transactions.filter(
 			transaction => transaction.sectionId === sectionId
@@ -136,6 +144,7 @@ const createData = async (
 			from: '2020-01-01T00:00:00.000Z',
 			to: '2023-01-01T00:00:00.000Z'
 		})
+
 		const section: Prisma.SectionCreateManyInput = {
 			id: sectionId,
 			name,
@@ -143,10 +152,7 @@ const createData = async (
 			icon: sectionView.iconName,
 			color: sectionView.color,
 			amount,
-			walletId: faker.number.int({
-				min: walletId,
-				max: walletId + countWallets - 1
-			}),
+			walletId: randomWalletId,
 			createdAt: date,
 			updatedAt: date
 		}
@@ -183,6 +189,9 @@ const createData = async (
 			id: walletId,
 			name,
 			account,
+			image: faker.image.urlLoremFlickr({
+				category: 'abstract'
+			}),
 			userId: faker.number.int({
 				min: userId,
 				max: userId + countUsers - 1
@@ -249,7 +258,7 @@ const createData = async (
 
 async function main() {
 	console.log('Start seeding...')
-	await createData(3, 5, 10, 80)
+	await createData(3, 5, 30, 80)
 }
 
 main()

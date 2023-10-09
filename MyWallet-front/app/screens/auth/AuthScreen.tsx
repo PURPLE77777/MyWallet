@@ -18,15 +18,13 @@ import { useActions } from '@hooks/useActions'
 import { useAuth } from '@hooks/useAuth'
 
 const AuthScreen = () => {
-	const { user, error } = useAuth()
+	const { user, error, isLoading } = useAuth()
 
 	const { login, register } = useActions()
 
-	const {
-		control,
-		handleSubmit,
-		formState: { errors }
-	} = useForm<INamePassword>({ mode: 'onChange' })
+	const { control, handleSubmit, reset } = useForm<INamePassword>({
+		mode: 'onChange'
+	})
 
 	const [isSignIn, setIsSignIn] = useState(true)
 
@@ -62,6 +60,8 @@ const AuthScreen = () => {
 									error ? 'border-red-500' : ''
 								)}
 								placeholder='Enter name'
+								value={value}
+								// maxLength={28}
 								placeholderTextColor={COLORS.gray75}
 								onBlur={onBlur}
 								onChangeText={onChange}
@@ -93,6 +93,8 @@ const AuthScreen = () => {
 									error && 'border-red-500'
 								)}
 								placeholder='Enter password'
+								maxLength={28}
+								value={value}
 								placeholderTextColor={COLORS.gray75}
 								onBlur={onBlur}
 								onChangeText={onChange}
@@ -107,7 +109,14 @@ const AuthScreen = () => {
 				/>
 				{error && <Text className='mt-4 text-red-600'>{error.message}</Text>}
 				<View className='mt-7 w-3/4 flex-row justify-center align-baseline'>
+					<Pressable
+						onPress={() => reset()}
+						className='absolute left-0 self-center '
+					>
+						<Text className='text-white underline'>Reset fields</Text>
+					</Pressable>
 					<TouchableOpacity
+						disabled={isLoading}
 						className='h-[40px] w-[120px] justify-center rounded-full bg-primaryPurple'
 						onPress={handleSubmit(onSubmit)}
 					>

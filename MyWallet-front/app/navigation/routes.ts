@@ -1,4 +1,6 @@
 import ProfileScreen from '@screens/profile/ProfileScreen'
+import ReviewWalletScreen from '@screens/reviewWallet/ReviewWalletScreen'
+import SectionProfileScreen from '@screens/sectionProfile/SectionProfileScreen'
 import SectionsScreen from '@screens/sections/SectionsScreen'
 import StatisticsScreen from '@screens/statistics/StatisticsScreen'
 import WalletsScreen from '@screens/wallets/WalletsScreen'
@@ -21,5 +23,13 @@ export const routes: IRoute[] = [
 	{
 		name: 'Statistics',
 		component: StatisticsScreen
+	},
+	{
+		name: 'ReviewWallet',
+		component: ReviewWalletScreen
+	},
+	{
+		name: 'SectionProfile',
+		component: SectionProfileScreen
 	}
 ]

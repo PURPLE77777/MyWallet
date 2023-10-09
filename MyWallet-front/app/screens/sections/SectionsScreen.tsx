@@ -1,88 +1,43 @@
-import { useRoute } from '@react-navigation/native'
-import cn from 'clsx'
-import { useEffect, useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
-import {
-	Keyboard,
-	Pressable,
-	Text,
-	TextInput,
-	TouchableWithoutFeedback,
-	View,
-	useWindowDimensions
-} from 'react-native'
+import { useState } from 'react'
+import { View } from 'react-native'
 
-import { EXPENSES_ICONS, GAINS_ICONS } from '@constants/icons.constants'
-
-import Icon from '@ui/icons/Icon'
 import Layout from '@ui/layout/Layout'
 
-import { ISection, ISectionIcons } from './section.interface'
+import SectionPreview from './components/SectionPreview'
+import SwitchBtns from './components/SwitchBtns'
+import { GainExpenseType, SelectedSectionType } from './type/section.interface'
 
 const SectionsScreen = () => {
-	const route = useRoute()
-	const [statView, setStatView] = useState<'gains' | 'expenses'>('expenses')
-	const [gainsIcons, setGainsIcons] = useState<ISectionIcons[]>([])
-	const [expensesIcons, setExpensesIcons] = useState<ISectionIcons[]>([])
-	const [gainActive, setGainActive] = useState<number | null>(null)
-	const [expenseActive, setExpenseActive] = useState<number | null>(null)
+	const [typeTransactions, setTypeTransactions] =
+		useState<GainExpenseType>('gains')
 
-	const { width: screenWidth } = useWindowDimensions()
+	const [selectedSection, setSelectedSection] =
+		useState<SelectedSectionType>(null)
 
-	const setGainSection = () => {
-		setStatView('gains')
-	}
+	// const {} = useActions()
 
-	const setExpenseSection = () => {
-		setStatView('expenses')
-	}
-	useEffect(() => {
-		setGainsIcons(GAINS_ICONS)
-		setExpensesIcons(EXPENSES_ICONS)
-	}, [])
+	// const {
+	// 	control,
+	// 	handleSubmit,
+	// 	formState: { errors }
+	// } = useForm<ISection>({
+	// 	mode: 'onChange'
+	// })
 
-	const {
-		control,
-		handleSubmit,
-		formState: { errors }
-	} = useForm<ISection>({
-		mode: 'onChange'
-	})
-
-	const onSubmit = (data: ISection) => {
-		console.log(data)
-	}
+	// const onSubmit = (data: ISectionForm) => {
+	// 	console.log(data)
+	// }
 
 	return (
-		<Layout title={route.name}>
-			<Pressable
-				className='flex-1'
-				android_disableSound
-				onPress={Keyboard.dismiss}
-			>
-				<View className='flex-row items-center justify-center'>
-					<TouchableWithoutFeedback onPress={setGainSection}>
-						<Text
-							className={cn(
-								'bg-primaryPurple p-5 font-bold text-white',
-								statView === 'gains' ? 'underline' : ''
-							)}
-						>
-							Gains
-						</Text>
-					</TouchableWithoutFeedback>
-					<TouchableWithoutFeedback onPress={setExpenseSection}>
-						<Text
-							className={cn(
-								'bg-primaryPurple p-5 font-bold text-white',
-								statView === 'expenses' ? 'underline' : ''
-							)}
-						>
-							Expenses
-						</Text>
-					</TouchableWithoutFeedback>
-				</View>
-				<View>
+		<Layout title="Wallet's sections">
+			<View className='flex-1'>
+				<SwitchBtns
+					typeTransactions={typeTransactions}
+					setTypeTransactions={setTypeTransactions}
+					setSelectedSection={setSelectedSection}
+				/>
+
+				{/* <View>
 					<Controller
 						control={control}
 						name='amount'
@@ -129,64 +84,14 @@ const SectionsScreen = () => {
 							</>
 						)}
 					/>
-				</View>
-				<View className='flex-row flex-wrap gap-y-5'>
-					{statView === 'gains'
-						? gainsIcons.map((gainIcon, ind) => (
-								<Pressable
-									className={cn(
-										`h-[100px] w-1/4 items-center rounded-xl`,
-										gainActive === ind && gainIcon.color
-									)}
-									key={`gainIcon-${gainIcon.sectionName}`}
-									onPress={() => setGainActive(ind)}
-								>
-									<View className={cn('rounded-full p-4', gainIcon.color)}>
-										<Icon name={gainIcon.iconName} color='#fff' size={40} />
-									</View>
-									<Text className='text-center text-white'>
-										{gainIcon.sectionName}
-									</Text>
-								</Pressable>
-						  ))
-						: expensesIcons.map((expenseIcon, ind) => {
-								return (
-									<Pressable
-										className={cn(
-											`h-[100px] w-1/4 items-center rounded-xl`,
-											expenseActive === ind && expenseIcon.color
-										)}
-										key={`expenseIcon-${expenseIcon.iconName}`}
-										onPress={() => setExpenseActive(ind)}
-									>
-										<View className={cn('rounded-full p-4', expenseIcon.color)}>
-											<Icon
-												name={expenseIcon.iconName}
-												color={'#ffffff'}
-												size={40}
-											/>
-										</View>
-										<Text className='text-center text-white'>
-											{expenseIcon.sectionName}
-										</Text>
-									</Pressable>
-								)
-						  })}
-					<Pressable
-						className={cn('h-[100px] w-[100px] items-center rounded-xl')}
-						onPress={() => {
-							statView === 'gains'
-								? setGainActive(null)
-								: setExpenseActive(null)
-						}}
-					>
-						<View className='rounded-full bg-gray-400 p-4'>
-							<Icon name='pluscircle' color={'#ffffff'} size={40} />
-						</View>
-						<Text className='text-center text-white'>More</Text>
-					</Pressable>
-				</View>
-			</Pressable>
+				</View> */}
+
+				<SectionPreview
+					typeTransactions={typeTransactions}
+					selectedSection={selectedSection}
+					setSelectedSection={setSelectedSection}
+				/>
+			</View>
 		</Layout>
 	)
 }

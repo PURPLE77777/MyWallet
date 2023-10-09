@@ -1,4 +1,4 @@
-import cn from 'clsx'
+import { clsx } from 'clsx'
 import { FC } from 'react'
 import { TouchableHighlight } from 'react-native'
 
@@ -22,7 +22,7 @@ const MenuItem: FC<IMenuItem> = ({ item, num, currentRoute, navigate }) => {
 		COLORS.primaryGreen,
 		COLORS.primaryPurple,
 		COLORS.primaryLightGray,
-		COLORS.primatyRed
+		COLORS.primaryRed
 	]
 
 	const nav = (name: keyof RootStackParamList) => {
@@ -31,7 +31,7 @@ const MenuItem: FC<IMenuItem> = ({ item, num, currentRoute, navigate }) => {
 
 	return (
 		<TouchableHighlight
-			className={cn(
+			className={clsx(
 				'h-[50px] w-[25%] items-center justify-center',
 				'bg-primaryLightGray'
 				// num == 0

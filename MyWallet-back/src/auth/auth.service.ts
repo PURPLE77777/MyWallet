@@ -117,7 +117,7 @@ export class AuthService {
 			}
 		})
 
-		if (!user) throw new NotFoundException('No fonud such user')
+		if (!user) throw new NotFoundException('No found such user')
 
 		const tokens = this.generateTokens(user.id)
 

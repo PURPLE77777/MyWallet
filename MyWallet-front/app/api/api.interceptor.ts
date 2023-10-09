@@ -3,10 +3,12 @@ import axios from 'axios'
 import { getAccessToken } from '@services/auth/auth.helper'
 
 import { errorCatch, getContentType } from './api.helper'
+import { sleep } from './sleep'
 
 export const instance = axios.create({
 	baseURL: process.env.EXPO_PUBLIC_SERVER_URL,
-	headers: getContentType()
+	headers: getContentType(),
+	timeout: 5000
 })
 
 instance.interceptors.request.use(
@@ -26,7 +28,10 @@ instance.interceptors.request.use(
 )
 
 instance.interceptors.response.use(
-	response => response,
+	async response => {
+		await sleep()
+		return response
+	},
 	async error => {
 		console.log(errorCatch(error))
 		return Promise.reject(errorCatch(error))

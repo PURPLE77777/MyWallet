@@ -97,7 +97,7 @@ export class TransactionService {
 	}
 
 	async create(userId: number, dto: TransactionDto) {
-		const wallet = await this.prisma.wallet.findUnique({
+		const wallet = await this.prisma.wallet.findFirst({
 			where: {
 				name: dto.wallet,
 				userId

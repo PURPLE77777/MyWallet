@@ -1,7 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
 import clsx from 'clsx'
 import { FC } from 'react'
-import { ScrollView, View } from 'react-native'
+import { ActivityIndicator, ScrollView, View } from 'react-native'
+
+import { COLORS } from '@constants/colors.constants'
 
 import { EnumTransactionSort } from '@services/transaction/transaction.dto'
 import TransactionService from '@services/transaction/transaction.service'
@@ -24,23 +26,21 @@ const LastTransactions: FC<ILastTransactions> = ({ wallet }) => {
 				perPage: 5,
 				page: 1
 			})
+
 			return response
 		}
 	})
-	console.log(wallet.name, data, isFetching)
 
 	const formatDate = (date: Date) => {
 		const year = date.getFullYear(),
-			month = date.getMonth() + 1,
+			month = date.getMonth(),
 			day = date.getDate(),
 			hour = date.getHours(),
 			minute = date.getMinutes()
 
-		return `${day > 9 ? day : `0${day}`}.${
-			month > 9 ? month : `0${month}`
-		}.${year} ${hour > 9 ? hour : `0${hour}`}:${
-			minute > 9 ? minute : `0${minute}`
-		}`
+		return `${day > 9 ? day : `0${day}`} ${monthsRu[month]} ${year} ${
+			hour > 9 ? hour : `0${hour}`
+		}:${minute > 9 ? minute : `0${minute}`}`
 	}
 
 	const monthsRu = [
@@ -57,44 +57,59 @@ const LastTransactions: FC<ILastTransactions> = ({ wallet }) => {
 		'ноября',
 		'декабря'
 	]
-
+	// console.log('LastTransactions', data)
 	return (
 		<ScrollView className='mx-5 mt-5 h-[250px] rounded-[10px] bg-primaryLightGray px-3'>
-			{data?.map(
-				(
-					{ amount, id, createdAt, section: { type, name, icon, color } },
-					index
-				) => (
-					<View
-						className='flex-row items-center justify-between'
-						key={`last_transactions-${id}`}
-					>
-						<View className={color}>
-							<Icon name={icon} size={40} />
-						</View>
+			{isFetching ? (
+				<ActivityIndicator
+					className='h-[250px]'
+					animating={isFetching}
+					size='large'
+					color={COLORS.primaryDarkGray}
+				/>
+			) : data ? (
+				data.map(
+					(
+						{ amount, id, createdAt, section: { type, name, icon, color } },
+						index
+					) => (
 						<View
-							className={clsx(
-								'ml-4 flex-grow flex-row items-center justify-between py-2',
-								index !== data.length - 1
-									? 'border-b-2 border-solid border-white'
-									: ''
-							)}
+							className='flex-row items-center justify-between'
+							key={`last_transactions-${id}`}
 						>
-							<View>
-								<Txt className='text-sm'>{formatDate(new Date(createdAt))}</Txt>
-								<Txt className='text-sm'>{name}</Txt>
+							<View className={color}>
+								<Icon name={icon} size={40} />
 							</View>
-							<Txt
+							<View
 								className={clsx(
-									'font-comfortaaBold',
-									type === 'GAIN' ? 'text-primaryGreen' : 'text-primatyRed'
+									'ml-4 flex-grow flex-row items-center justify-between py-2',
+									index !== data.length - 1
+										? 'border-b-2 border-solid border-white'
+										: ''
 								)}
 							>
-								{type === 'GAIN' ? amount : '-' + amount}
-							</Txt>
+								<View>
+									<Txt className='text-sm'>
+										{formatDate(new Date(createdAt))}
+									</Txt>
+									<Txt className='text-sm'>{name}</Txt>
+								</View>
+								<Txt
+									className={clsx(
+										'font-comfortaaBold',
+										type === 'GAIN' ? 'text-primaryGreen' : 'text-primatyRed'
+									)}
+								>
+									{type === 'GAIN' ? amount : '-' + amount}
+								</Txt>
+							</View>
 						</View>
-					</View>
+					)
 				)
+			) : (
+				<View className='h-[250px] justify-center'>
+					<Txt>No transactions</Txt>
+				</View>
 			)}
 		</ScrollView>
 	)
