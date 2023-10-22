@@ -15,6 +15,7 @@
 			"@store/*": ["./store/*"],
 			"@assets/*": ["./assets"],
 			"@ui/*": ["./ui/*"],
+			"@utils/*": ["./utils/*"],
 			"@AppTypes/*": ["./types/*"]
 		}
 	}

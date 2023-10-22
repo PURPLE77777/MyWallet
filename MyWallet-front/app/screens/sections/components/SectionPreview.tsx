@@ -15,12 +15,12 @@ import { useTypedSelector } from '@hooks/useTypedSelector'
 import Button from '@ui/button/Button'
 import Icon from '@ui/icons/Icon'
 
-import { GainExpenseType, SelectedSectionType } from '../type/section.interface'
+import { SelectedSectionType } from '../type/section.interface'
 
 import SectionItem from './SectionItem'
 
 interface ISectionPreview {
-	typeTransactions: GainExpenseType
+	typeTransactions: EnumTypeTransaction
 	selectedSection: ISection | null
 	setSelectedSection: Dispatch<SetStateAction<SelectedSectionType>>
 }
@@ -40,6 +40,7 @@ const SectionPreview: FC<ISectionPreview> = ({
 			return response
 		}
 	})
+
 	const { navigate } = useTypedNavigation()
 
 	return (
@@ -48,14 +49,18 @@ const SectionPreview: FC<ISectionPreview> = ({
 				'justify-center ': isFetching
 			})}
 		>
-			<View className={clsx('flex-row flex-wrap', { 'w-full': !isFetching })}>
+			<View
+				className={clsx('flex-row flex-wrap items-baseline', {
+					'w-full': !isFetching
+				})}
+			>
 				{isFetching ? (
 					<ActivityIndicator
 						animating={isFetching}
 						size='large'
 						color={COLORS.primaryLightGray}
 					/>
-				) : typeTransactions === 'gains' ? (
+				) : typeTransactions === EnumTypeTransaction.GAIN ? (
 					data
 						?.filter(item => item.type === EnumTypeTransaction.GAIN)
 						.map((gain, ind) => (
@@ -87,7 +92,10 @@ const SectionPreview: FC<ISectionPreview> = ({
 						})}
 						onPress={() => {
 							setSelectedSection(null)
-							navigate('SectionProfile')
+							navigate('SectionProfile', {
+								section: null,
+								sectionType: typeTransactions
+							})
 						}}
 					>
 						<View className='rounded-full bg-gray-400 p-4'>
@@ -104,16 +112,17 @@ const SectionPreview: FC<ISectionPreview> = ({
 						text={'Edit'}
 						onPress={() =>
 							navigate('SectionProfile', {
-								section: selectedSection
+								section: selectedSection,
+								sectionType: typeTransactions
 							})
 						}
 						className='basis-1/2 bg-primaryGreen'
-					></Button>
+					/>
 					<Button
 						text={'Delete'}
 						className='basis-1/2 bg-primatyRed'
 						onPress={() => setSelectedSection(null)}
-					></Button>
+					/>
 				</View>
 			)}
 		</View>

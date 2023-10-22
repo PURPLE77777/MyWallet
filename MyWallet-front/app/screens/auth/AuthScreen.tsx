@@ -1,4 +1,5 @@
 import cn from 'clsx'
+import clsx from 'clsx'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import {
@@ -16,6 +17,8 @@ import { INamePassword } from '@store/user/user.interface'
 
 import { useActions } from '@hooks/useActions'
 import { useAuth } from '@hooks/useAuth'
+
+import Txt from '@ui/text/Txt'
 
 const AuthScreen = () => {
 	const { user, error, isLoading } = useAuth()
@@ -88,7 +91,7 @@ const AuthScreen = () => {
 					}) => (
 						<>
 							<TextInput
-								className={cn(
+								className={clsx(
 									'mt-5 w-3/4 rounded-md border-[3px] border-solid border-primaryPurple px-5 py-2 text-lg text-white',
 									error && 'border-red-500'
 								)}
@@ -100,9 +103,9 @@ const AuthScreen = () => {
 								onChangeText={onChange}
 							/>
 							{error && (
-								<Text className='ml-[72px] mt-4 self-start text-[16px] text-red-500'>
+								<Txt className='ml-[72px] mt-4 self-start text-[16px] text-red-500'>
 									{error.message}
-								</Text>
+								</Txt>
 							)}
 						</>
 					)}
@@ -120,17 +123,17 @@ const AuthScreen = () => {
 						className='h-[40px] w-[120px] justify-center rounded-full bg-primaryPurple'
 						onPress={handleSubmit(onSubmit)}
 					>
-						<Text className='t.fontComfortaa text-center font-bold text-white'>
+						<Txt className='t.fontComfortaa text-center font-bold text-white'>
 							{isSignIn ? 'Sign in' : 'Sign up'}
-						</Text>
+						</Txt>
 					</TouchableOpacity>
 					<Pressable
 						onPress={() => setIsSignIn(!isSignIn)}
 						className='absolute right-0 self-center '
 					>
-						<Text className='text-white underline'>
+						<Txt className='text-white underline'>
 							{isSignIn ? 'Sign up' : 'Sign in'}
-						</Text>
+						</Txt>
 					</Pressable>
 				</View>
 			</View>

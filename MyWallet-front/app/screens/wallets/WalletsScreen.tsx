@@ -1,5 +1,4 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import clsx from 'clsx'
 import { FC, useEffect, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 
@@ -47,9 +46,7 @@ const WalletsScreen: FC<WalletType> = ({ route, navigation: { navigate } }) => {
 
 	return (
 		<Layout title={route.name}>
-			<View
-				className={clsx({ 'flex-1 items-center justify-center': !wallets })}
-			>
+			<View className='mx-5 flex-1 justify-center'>
 				{wallets && <CarouselView wallets={wallets} setWallet={setWallet} />}
 				{wallets && wallet ? (
 					<LastTransactions wallet={wallet} />

@@ -48,6 +48,10 @@ module.exports = function (api) {
 							rootPathPrefix: '@services/'
 						},
 						{
+							rootPathSuffix: './app/utils/',
+							rootPathPrefix: '@utils/'
+						},
+						{
 							rootPathSuffix: './app/store/',
 							rootPathPrefix: '@store/'
 						}

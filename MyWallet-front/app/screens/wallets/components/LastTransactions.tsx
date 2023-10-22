@@ -57,9 +57,12 @@ const LastTransactions: FC<ILastTransactions> = ({ wallet }) => {
 		'ноября',
 		'декабря'
 	]
-	// console.log('LastTransactions', data)
+
 	return (
-		<ScrollView className='mx-5 mt-5 h-[250px] rounded-[10px] bg-primaryLightGray px-3'>
+		<ScrollView
+			showsVerticalScrollIndicator={false}
+			className='mt-5 rounded-[10px] bg-primaryLightGray px-3'
+		>
 			{isFetching ? (
 				<ActivityIndicator
 					className='h-[250px]'

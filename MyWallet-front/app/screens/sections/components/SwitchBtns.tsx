@@ -2,12 +2,14 @@ import clsx from 'clsx'
 import { Dispatch, FC, SetStateAction } from 'react'
 import { Text, TouchableWithoutFeedback, View } from 'react-native'
 
-import { GainExpenseType, SelectedSectionType } from '../type/section.interface'
+import { EnumTypeTransaction } from '@AppTypes/section.interface'
+
+import { SelectedSectionType } from '../type/section.interface'
 
 interface ISwitchBtns {
-	typeTransactions: GainExpenseType
-	setTypeTransactions: Dispatch<SetStateAction<GainExpenseType>>
-	setSelectedSection: Dispatch<SetStateAction<SelectedSectionType>>
+	typeTransactions: EnumTypeTransaction
+	setTypeTransactions: Dispatch<SetStateAction<EnumTypeTransaction>>
+	setSelectedSection?: Dispatch<SetStateAction<SelectedSectionType>>
 }
 
 const SwitchBtns: FC<ISwitchBtns> = ({
@@ -16,13 +18,13 @@ const SwitchBtns: FC<ISwitchBtns> = ({
 	setSelectedSection
 }) => {
 	const setGainSection = () => {
-		setTypeTransactions('gains')
-		setSelectedSection(null)
+		setTypeTransactions(EnumTypeTransaction.GAIN)
+		setSelectedSection && setSelectedSection(null)
 	}
 
 	const setExpenseSection = () => {
-		setTypeTransactions('expenses')
-		setSelectedSection(null)
+		setTypeTransactions(EnumTypeTransaction.EXPENSE)
+		setSelectedSection && setSelectedSection(null)
 	}
 
 	return (
@@ -31,7 +33,7 @@ const SwitchBtns: FC<ISwitchBtns> = ({
 				<Text
 					className={clsx(
 						'bg-primaryPurple p-5 font-bold text-white',
-						typeTransactions === 'gains' ? 'underline' : ''
+						typeTransactions === EnumTypeTransaction.GAIN ? 'underline' : ''
 					)}
 				>
 					Gains
@@ -41,7 +43,7 @@ const SwitchBtns: FC<ISwitchBtns> = ({
 				<Text
 					className={clsx(
 						'bg-primaryPurple p-5 font-bold text-white',
-						typeTransactions === 'expenses' ? 'underline' : ''
+						typeTransactions === EnumTypeTransaction.EXPENSE ? 'underline' : ''
 					)}
 				>
 					Expenses
