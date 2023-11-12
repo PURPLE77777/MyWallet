@@ -1,10 +1,11 @@
 import clsx from 'clsx'
-import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import {
 	ListRenderItem,
 	Platform,
 	Pressable,
 	StyleSheet,
+	TouchableOpacity,
 	View,
 	useWindowDimensions
 } from 'react-native'
@@ -16,13 +17,14 @@ import Carousel, {
 
 import { IWallet } from '@AppTypes/waller.interface'
 
+import { useActions } from '@hooks/useActions'
 import { useTypedNavigation } from '@hooks/useTypedNavigation'
 
+import Icon from '@ui/icons/Icon'
 import Txt from '@ui/text/Txt'
 
 interface ICarouselView {
-	wallets?: IWallet[]
-	setWallet: Dispatch<SetStateAction<IWallet | null>>
+	wallets: IWallet[]
 }
 
 type ICarouselItem = ListRenderItem<IWallet> &
@@ -34,14 +36,18 @@ type ICarouselItem = ListRenderItem<IWallet> &
 		parallaxProps?: AdditionalParallaxProps | undefined
 	) => React.ReactNode)
 
-const CarouselView: FC<ICarouselView> = ({ wallets, setWallet }) => {
+const CarouselView: FC<ICarouselView> = ({ wallets }) => {
 	const { width: screenWidth } = useWindowDimensions()
 	const [activeSlide, setActiveSlide] = useState<number>(0)
 	const { navigate } = useTypedNavigation()
 
+	const { selectWallet, deselectWallet } = useActions()
+
 	useEffect(() => {
-		if (wallets) {
-			setWallet(wallets[activeSlide])
+		if (activeSlide < wallets.length) {
+			selectWallet(wallets[activeSlide])
+		} else {
+			deselectWallet()
 		}
 	}, [activeSlide, wallets])
 
@@ -53,79 +59,120 @@ const CarouselView: FC<ICarouselView> = ({ wallets, setWallet }) => {
 			<Pressable
 				className='h-[200px] w-full'
 				onPress={() =>
-					navigate('ReviewWallet', {
-						wallet: wallets ? wallets[activeSlide] : null
-					})
+					item.id
+						? navigate(
+								'ReviewWallet',
+								wallets
+									? {
+											wallet: wallets[activeSlide]
+									  }
+									: undefined
+						  )
+						: navigate('ReviewWallet')
 				}
 			>
 				<ParallaxImage
-					source={require('@assets/images/map_of_planet.jpg')}
+					source={item.id && require('@assets/images/map_of_planet.jpg')}
 					containerStyle={styles.imageContainer}
 					style={styles.image}
 					parallaxFactor={0.4}
 					{...parallaxProps}
 				/>
 				<View className='absolute left-0 top-0 h-full w-full rounded-lg bg-black opacity-70' />
-				<View className='absolute left-4 top-1/4 w-full'>
-					<Txt className='text-3xl capitalize' numberOfLines={2}>
-						{item.name}
-					</Txt>
-					<View className={clsx('mt-5 flex-row text-2xl')}>
-						<Txt>Account:</Txt>
-						<Txt
-							className={clsx(
-								'ml-4',
-								+item.account > 0
-									? 'text-primaryGreen'
-									: +item.account < 0
-									? 'text-primatyRed'
-									: ''
-							)}
+
+				{item.id ? (
+					<>
+						<View className='absolute left-4 top-1/4 w-full'>
+							<Txt className='text-3xl capitalize' numberOfLines={2}>
+								{item.name}
+							</Txt>
+							<View className='mt-5 flex-row text-2xl'>
+								<Txt>Account:</Txt>
+								<Txt
+									className={clsx(
+										'ml-4',
+										+item.account > 0
+											? 'text-primaryGreen'
+											: +item.account < 0
+											? 'text-primatyRed'
+											: ''
+									)}
+								>
+									{item.account}
+								</Txt>
+							</View>
+						</View>
+						<TouchableOpacity
+							activeOpacity={0.5}
+							onPress={() =>
+								navigate(
+									'TransactionProfile',
+									// eslint-disable-next-line
+									// @ts-ignore
+									wallets
+										? {
+												wallet: wallets[activeSlide]
+										  }
+										: undefined
+								)
+							}
+							className='absolute bottom-3 right-3 h-[40px] w-[40px] items-center justify-center rounded-full bg-[#facc14]'
 						>
-							{item.account}
-						</Txt>
+							<Icon name={'plus'} size={40} />
+						</TouchableOpacity>
+					</>
+				) : (
+					<View className='h-full items-center justify-center rounded-lg bg-primaryLightGray text-center align-middle'>
+						<Icon name={'plus'} color='white' size={100} />
 					</View>
-				</View>
+				)}
 			</Pressable>
 		)
 	}
 
 	return (
-		<View className='items-center justify-center'>
-			{wallets && (
-				<>
-					<Carousel
-						sliderWidth={screenWidth}
-						sliderHeight={screenWidth}
-						itemWidth={screenWidth - 35}
-						data={wallets}
-						// eslint-disable-next-line
-						// @ts-ignore
-						renderItem={CarouselItem}
-						hasParallaxImages={true}
-						onSnapToItem={index => setActiveSlide(index)}
-					/>
-					<Pagination
-						dotsLength={wallets.length}
-						activeDotIndex={activeSlide}
-						// containerStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.75)' }}
-						dotStyle={{
-							width: 10,
-							height: 10,
-							borderRadius: 5,
-							marginHorizontal: 8,
-							backgroundColor: 'rgba(255, 255, 255, 0.92)'
-						}}
-						inactiveDotStyle={
-							{
-								// Define styles for inactive dots here
-							}
+		<View className='h-[230px]'>
+			<>
+				<Carousel
+					sliderWidth={screenWidth}
+					itemWidth={screenWidth - 35}
+					data={wallets.concat({
+						id: 0,
+						account: 0,
+						name: ''
+					})}
+					// eslint-disable-next-line
+					// @ts-ignore
+					renderItem={CarouselItem}
+					hasParallaxImages={true}
+					onSnapToItem={index => setActiveSlide(index)}
+				/>
+				<Pagination
+					dotsLength={wallets.length + 1}
+					activeDotIndex={activeSlide}
+					containerStyle={{
+						paddingVertical: 0,
+						top: 0
+					}}
+					// dotContainerStyle={{
+					// 	height: 0,
+					// 	width: 0
+					// }}
+					dotStyle={{
+						width: 10,
+						height: 10,
+						borderRadius: 5,
+						backgroundColor: 'rgba(255, 255, 255, 0.92)'
+					}}
+					inactiveDotStyle={
+						{
+							// Define styles for inactive dots here
 						}
-						inactiveDotOpacity={0.4}
-						inactiveDotScale={0.6}
-					/>
-				</>
-			)}
+					}
+					inactiveDotOpacity={0.4}
+					inactiveDotScale={0.6}
+				/>
+			</>
 		</View>
 	)
 }

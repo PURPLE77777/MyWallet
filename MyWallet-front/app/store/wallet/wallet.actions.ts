@@ -3,7 +3,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import { WALLET_BASE } from '@services/path.base'
 import WalletService from '@services/wallet/wallet.service'
 
-import { IWallet, IWalletNameAccount } from '@AppTypes/waller.interface'
+import { IWallet, IWalletName } from '@AppTypes/waller.interface'
 
 export const getUserWallets = createAsyncThunk<IWallet[]>(
 	WALLET_BASE,
@@ -17,7 +17,7 @@ export const getUserWallets = createAsyncThunk<IWallet[]>(
 	}
 )
 
-export const createWallet = createAsyncThunk<IWallet, IWalletNameAccount>(
+export const createWallet = createAsyncThunk<IWallet, IWalletName>(
 	`${WALLET_BASE}/create`,
 	async (data, { rejectWithValue }) => {
 		try {
@@ -31,7 +31,7 @@ export const createWallet = createAsyncThunk<IWallet, IWalletNameAccount>(
 
 export const updateWallet = createAsyncThunk<
 	IWallet,
-	{ id: number } & IWalletNameAccount
+	{ id: number } & IWalletName
 >(`${WALLET_BASE}/update`, async (data, { rejectWithValue }) => {
 	try {
 		const response = await WalletService.updateWallet(data.id, data)

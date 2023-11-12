@@ -9,8 +9,9 @@ export type RootStackParamList = {
 	Auth: undefined
 	Profile: undefined
 	Statistics: undefined
-	ReviewWallet: { wallet: IWallet | null } | undefined
+	ReviewWallet: { wallet: IWallet } | undefined
 	SectionProfile: { section: ISection | null; sectionType: EnumTypeTransaction }
+	TransactionProfile: { wallet: IWallet }
 }
 
 export interface IRoute {

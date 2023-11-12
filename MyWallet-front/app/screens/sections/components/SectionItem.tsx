@@ -21,14 +21,14 @@ const SectionItem: FC<ISectionItem> = ({
 	return (
 		<Pressable
 			className={clsx(
-				`h-[100px] w-1/4 items-center rounded-xl`,
+				`w-1/4 items-center rounded-xl p-1 pt-0`,
 				activeSection?.id === section.id && section.color
 			)}
 			key={`gain-${section.id}`}
 			onPress={() => setActiveSection(section)}
 			{...attr}
 		>
-			<View className={clsx('rounded-full p-4', section.color)}>
+			<View className={clsx('rounded-full p-3', section.color)}>
 				<Icon name={section.icon} color='#fff' size={40} />
 			</View>
 			<Text className='text-center text-white'>{section.name}</Text>

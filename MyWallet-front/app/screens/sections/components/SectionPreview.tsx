@@ -45,12 +45,12 @@ const SectionPreview: FC<ISectionPreview> = ({
 
 	return (
 		<View
-			className={clsx('mt-[30px] flex-1 items-center justify-between', {
+			className={clsx('m-5 flex-1 items-center justify-between', {
 				'justify-center ': isFetching
 			})}
 		>
 			<View
-				className={clsx('flex-row flex-wrap items-baseline', {
+				className={clsx('flex-row flex-wrap items-baseline gap-y-3', {
 					'w-full': !isFetching
 				})}
 			>
@@ -60,34 +60,22 @@ const SectionPreview: FC<ISectionPreview> = ({
 						size='large'
 						color={COLORS.primaryLightGray}
 					/>
-				) : typeTransactions === EnumTypeTransaction.GAIN ? (
+				) : (
 					data
-						?.filter(item => item.type === EnumTypeTransaction.GAIN)
+						?.filter(item => item.type === typeTransactions)
 						.map((gain, ind) => (
 							<SectionItem
-								className={clsx({ 'mt-3': ind > 3 })}
+								// className={clsx(ind > 3 && 'mt-3')}
 								activeSection={selectedSection}
 								section={gain}
 								setActiveSection={setSelectedSection}
 								key={`gain-${gain.id}`}
 							/>
 						))
-				) : (
-					data
-						?.filter(expense => expense.type === EnumTypeTransaction.EXPENSE)
-						.map((expense, ind) => (
-							<SectionItem
-								className={clsx({ 'mt-3': ind > 3 })}
-								activeSection={selectedSection}
-								section={expense}
-								setActiveSection={setSelectedSection}
-								key={`expense-${expense.id}`}
-							/>
-						))
 				)}
 				{!isFetching && (
 					<Pressable
-						className={clsx('h-[100px] w-1/4 items-center rounded-xl', {
+						className={clsx('w-1/4 items-center rounded-xl p-1 pt-0', {
 							'mt-3': data && data?.length > 3
 						})}
 						onPress={() => {
@@ -98,7 +86,7 @@ const SectionPreview: FC<ISectionPreview> = ({
 							})
 						}}
 					>
-						<View className='rounded-full bg-gray-400 p-4'>
+						<View className='rounded-full bg-gray-400 p-3'>
 							<Icon name='pluscircle' color={'#fff'} size={40} />
 						</View>
 						<Text className='text-center text-white'>Create</Text>
@@ -107,7 +95,7 @@ const SectionPreview: FC<ISectionPreview> = ({
 			</View>
 
 			{selectedSection && !isFetching && (
-				<View className='mb-5 flex-row gap-x-4 px-7'>
+				<View className='w-full flex-row flex-nowrap justify-between'>
 					<Button
 						text={'Edit'}
 						onPress={() =>
@@ -116,11 +104,11 @@ const SectionPreview: FC<ISectionPreview> = ({
 								sectionType: typeTransactions
 							})
 						}
-						className='basis-1/2 bg-primaryGreen'
+						className='basis-[45%] bg-primaryGreen'
 					/>
 					<Button
 						text={'Delete'}
-						className='basis-1/2 bg-primatyRed'
+						className='basis-[45%] bg-primatyRed'
 						onPress={() => setSelectedSection(null)}
 					/>
 				</View>

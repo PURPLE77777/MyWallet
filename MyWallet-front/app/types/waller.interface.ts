@@ -13,5 +13,7 @@ export type ReviewWalletType = NativeStackScreenProps<
 
 export interface IWalletNameAccount {
 	name: string
-	account: string
+	account: number
 }
+
+export type IWalletName = Pick<IWallet, 'name'>

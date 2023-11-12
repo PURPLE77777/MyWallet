@@ -34,7 +34,7 @@ const PieChart: FC<IPieChart> = ({ data, size }) => {
 	}
 
 	return (
-		<View className='relative my-5 items-center justify-center'>
+		<View className='my-5 items-center justify-center'>
 			<VictoryPie
 				data={data}
 				colorScale={pieColors}
@@ -48,7 +48,7 @@ const PieChart: FC<IPieChart> = ({ data, size }) => {
 				labelRadius={size / 2.6}
 				labelComponent={<CustomLabel />}
 			/>
-			<Text className='absolute font-comfortaaBold text-[40px] text-white'>
+			<Text className='absolute font-comfortaaBold text-[30px] text-white'>
 				{data.reduce((sum, item) => sum + item.amount, 0)}
 			</Text>
 		</View>

@@ -61,7 +61,7 @@ const StatisticsScreen = () => {
 
 	return (
 		<Layout title={route.name}>
-			<View className='flex-1 items-center'>
+			<View className='m-5 flex-1 items-center'>
 				<SwitchBtns
 					typeTransactions={sectionsType}
 					setTypeTransactions={setSectionsType}
@@ -75,10 +75,12 @@ const StatisticsScreen = () => {
 						/>
 					</View>
 				) : (
-					<>
-						<PieChart data={pieData} size={350} />
-						<PieLegend data={pieData} />
-					</>
+					!!pieData.length && (
+						<>
+							<PieChart data={pieData} size={250} />
+							<PieLegend data={pieData} />
+						</>
+					)
 				)}
 			</View>
 		</Layout>

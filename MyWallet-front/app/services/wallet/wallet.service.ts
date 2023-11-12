@@ -1,6 +1,6 @@
 import { WALLET_BASE } from '@services/path.base'
 
-import { IWallet, IWalletNameAccount } from '@AppTypes/waller.interface'
+import { IWallet, IWalletName } from '@AppTypes/waller.interface'
 
 import { instance } from '@api/api.interceptor'
 import { sleep } from '@api/sleep'
@@ -16,9 +16,9 @@ abstract class WalletService {
 		return response.data
 	}
 
-	static async createWallet(data: IWalletNameAccount) {
+	static async createWallet(data: IWalletName) {
 		const response = await instance<IWallet>({
-			url: `${WALLET_BASE}/create`,
+			url: `${WALLET_BASE}`,
 			method: 'post',
 			data
 		})
@@ -26,7 +26,7 @@ abstract class WalletService {
 		return response.data
 	}
 
-	static async updateWallet(walletId: number, data: IWalletNameAccount) {
+	static async updateWallet(walletId: number, data: IWalletName) {
 		const response = await instance<IWallet>({
 			url: `${WALLET_BASE}/${walletId}`,
 			method: 'patch',

@@ -3,6 +3,7 @@ import ReviewWalletScreen from '@screens/reviewWallet/ReviewWalletScreen'
 import SectionProfileScreen from '@screens/sectionProfile/SectionProfileScreen'
 import SectionsScreen from '@screens/sections/SectionsScreen'
 import StatisticsScreen from '@screens/statistics/StatisticsScreen'
+import TransactionProfileScreen from '@screens/transactionProfile/TransactionProfileScreen'
 import WalletsScreen from '@screens/wallets/WalletsScreen'
 
 import { IRoute } from './navigation.types'
@@ -31,5 +32,9 @@ export const routes: IRoute[] = [
 	{
 		name: 'SectionProfile',
 		component: SectionProfileScreen
+	},
+	{
+		name: 'TransactionProfile',
+		component: TransactionProfileScreen
 	}
 ]

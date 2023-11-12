@@ -14,7 +14,7 @@ const Layout: FC<PropsWithChildren<ILayout>> = ({ title, children, clNm }) => {
 	return (
 		<SafeAreaView className='flex-1'>
 			<View
-				className={clsx('flex-1 bg-primaryDarkGray', clNm)}
+				className={clsx('flex-1  bg-primaryDarkGray', clNm)}
 				style={{ paddingTop: Platform.OS === 'ios' ? top / 5 : top * 1.5 }}
 			>
 				{title && (

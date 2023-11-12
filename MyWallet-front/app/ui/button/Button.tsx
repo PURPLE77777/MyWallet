@@ -6,20 +6,25 @@ import Txt from '@ui/text/Txt'
 
 interface IButton extends TouchableOpacityProps {
 	text: string
-	className?: string
+	cN?: string
+	styleText?: string
 }
 
-const Button: FC<IButton> = ({ text, className, ...attrs }) => {
+const Button: FC<IButton> = ({ text, cN, styleText, ...attrs }) => {
 	return (
 		<TouchableOpacity
 			activeOpacity={0.5}
 			className={clsx(
 				'h-[40px] items-center justify-center rounded-full bg-[#facc14] px-3',
-				className
+				cN
 			)}
 			{...attrs}
 		>
-			<Txt className='font-comfortaaBold text-primaryDarkGray'>{text}</Txt>
+			<Txt
+				className={clsx('font-comfortaaBold text-primaryDarkGray', styleText)}
+			>
+				{text}
+			</Txt>
 		</TouchableOpacity>
 	)
 }

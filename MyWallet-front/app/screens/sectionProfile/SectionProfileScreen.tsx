@@ -1,10 +1,12 @@
 import clsx from 'clsx'
 import { FC, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { Pressable, TextInput, View } from 'react-native'
+import { Pressable, TextInput, View, useWindowDimensions } from 'react-native'
 
 import { COLORS, SECTIONS_COLORS } from '@constants/colors.constants'
 import { EXPENSES_ICONS, GAINS_ICONS } from '@constants/icons.constants'
+
+import SectionService from '@services/section/section.service'
 
 import { ISectionRequest } from '@screens/sectionProfile/types/section.types'
 import SectionIcon from '@screens/sections/components/SectionIcon'
@@ -22,6 +24,7 @@ import Txt from '@ui/text/Txt'
 
 const SectionProfileScreen: FC<SectionProfileType> = ({ route }) => {
 	const { section, sectionType } = route.params
+	const { width: screenWidth } = useWindowDimensions()
 
 	const [sectionIcon, setSectionIcon] = useState(section ? section.icon : '')
 	const [sectionColor, setSectionColor] = useState(section ? section.color : '')
@@ -32,16 +35,22 @@ const SectionProfileScreen: FC<SectionProfileType> = ({ route }) => {
 		mode: 'onChange',
 		defaultValues: {
 			name: section ? section.name : '',
-			amount: section ? `${section.amount}` : '',
 			color: section ? section.color : sectionColor,
 			icon: section ? section.icon : sectionIcon
 		}
 	})
 
-	const onSubmit = (data: ISectionRequest) => {
+	const onSubmit = async (data: ISectionRequest) => {
 		data.icon = sectionIcon
 		data.color = sectionColor
-		console.log(data)
+		data.type = sectionType
+		if (section) {
+			const response = await SectionService.update(section.id, data)
+			console.log('update', response)
+		} else if (selectedWallet) {
+			const response = await SectionService.create(selectedWallet.id, data)
+			console.log('create', response)
+		}
 	}
 
 	return (
@@ -80,7 +89,7 @@ const SectionProfileScreen: FC<SectionProfileType> = ({ route }) => {
 									</>
 								)}
 							/>
-							<Controller
+							{/* <Controller
 								control={control}
 								name={'amount'}
 								render={({
@@ -107,7 +116,7 @@ const SectionProfileScreen: FC<SectionProfileType> = ({ route }) => {
 										)}
 									</>
 								)}
-							/>
+							/> */}
 						</View>
 						<Txt className='mb-2 mt-5'>Icon:</Txt>
 						<View className='flex flex-row flex-wrap gap-3'>
@@ -136,10 +145,14 @@ const SectionProfileScreen: FC<SectionProfileType> = ({ route }) => {
 							{SECTIONS_COLORS.map((color, ind) => (
 								<Pressable
 									onPress={() => setSectionColor(color)}
-									className={clsx('h-[58px] w-[58px]', color, {
+									className={clsx(color, {
 										'border-[5px] border-solid border-[#e3e3e3]':
 											sectionColor === color
 									})}
+									style={{
+										width: screenWidth / 6.4,
+										height: screenWidth / 6.4
+									}}
 									key={`section_color-${color}-${ind}`}
 								></Pressable>
 							))}

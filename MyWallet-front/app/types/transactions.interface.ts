@@ -1,9 +1,12 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack'
+
+import { RootStackParamList } from '@navigation/navigation.types'
+
 export interface ITransaction {
 	id: number
 	amount: number
 	section: string
 	createdAt: Date
-	// color: string
 }
 
 export interface ITransactionsData {
@@ -17,3 +20,8 @@ export interface ITransactionsData {
 	}
 	createdAt: Date
 }
+
+export type TransactionProfileType = NativeStackScreenProps<
+	RootStackParamList,
+	'TransactionProfile'
+>
