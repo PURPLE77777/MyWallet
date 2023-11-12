@@ -25,7 +25,7 @@ export class WalletService {
 		return this.prisma.wallet.create({
 			data: {
 				name: dto.name,
-				account: dto.account ? dto.account : 0,
+				account: 0,
 				userId
 			}
 		})
@@ -45,8 +45,7 @@ export class WalletService {
 				id: wallet.id
 			},
 			data: {
-				name: dto.name,
-				account: dto.account
+				name: dto.name
 			}
 		})
 	}
@@ -61,6 +60,7 @@ export class WalletService {
 				}
 			})
 		)
+
 		return this.prisma.wallet.findMany({
 			where: {
 				userId

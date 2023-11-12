@@ -1,5 +1,5 @@
 import { EnumTypeTransaction } from '@prisma/client'
-import { IsEnum, IsNumber, IsOptional, IsString, Min } from 'class-validator'
+import { IsEnum, IsOptional, IsString } from 'class-validator'
 
 export class SectionDto {
 	@IsString()
@@ -7,11 +7,6 @@ export class SectionDto {
 
 	@IsEnum(EnumTypeTransaction)
 	type: EnumTypeTransaction
-
-	@IsNumber()
-	@Min(0)
-	@IsOptional()
-	amount?: number
 
 	@IsOptional()
 	@IsString()

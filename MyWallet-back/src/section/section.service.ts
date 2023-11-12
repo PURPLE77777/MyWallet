@@ -52,27 +52,25 @@ export class SectionService {
 				color: dto.color || '',
 				icon: dto.icon || '',
 				walletId,
-				amount: dto.amount ? dto.amount : 0
+				amount: 0
 			}
 		})
 
 		return section
 	}
 
-	async update(walletId: number, dto: SectionDto) {
+	async update(sectionId: number, dto: SectionDto) {
 		const section = await this.prisma.section.findFirst({
 			where: {
-				walletId,
-				name: dto.name
+				id: sectionId
 			}
 		})
 
 		if (!section) throw new NotFoundException('Now such section')
 
-		return this.prisma.section.updateMany({
+		return this.prisma.section.update({
 			where: {
-				walletId,
-				name: dto.name
+				id: sectionId
 			},
 			data: {
 				...dto
@@ -80,11 +78,10 @@ export class SectionService {
 		})
 	}
 
-	async delete(walletId: number, sectionName: string) {
-		return this.prisma.section.deleteMany({
+	async delete(id: number) {
+		return this.prisma.section.delete({
 			where: {
-				walletId,
-				name: sectionName
+				id
 			}
 		})
 	}

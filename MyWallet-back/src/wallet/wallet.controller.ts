@@ -37,7 +37,7 @@ export class WalletController {
 		return this.walletService.byName(+userId, wallet)
 	}
 
-	@Post('create')
+	@Post()
 	@Auth()
 	@UsePipes(new ValidationPipe())
 	create(@CurrentUser('id') userId: string, @Body() dto: WalletDto) {

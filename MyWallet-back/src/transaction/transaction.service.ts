@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
+import { EnumTypeTransaction, Prisma } from '@prisma/client'
 import { PaginationService } from 'src/pagination/pagination.service'
 import { PrismaService } from 'src/prisma.service'
 import {
@@ -16,8 +16,8 @@ export class TransactionService {
 	) {}
 
 	async getAll(walletId: number, dto: GetAllTransactionsDto) {
-		const { sort } = dto
-
+		const { sort, frDate, toDate } = dto
+		console.log(frDate, toDate)
 		const prismaSort: Prisma.TransactionOrderByWithRelationInput[] = []
 
 		switch (sort) {
@@ -37,31 +37,13 @@ export class TransactionService {
 
 		const { perPage, skip } = this.paginationService.getPagination(dto)
 
-		console.log(
-			'get all transactions:',
-			await this.prisma.transaction.findMany({
-				where: {
-					walletId
-				},
-				orderBy: prismaSort,
-				skip,
-				take: perPage,
-				include: {
-					section: {
-						select: {
-							type: true,
-							name: true,
-							color: true,
-							icon: true
-						}
-					}
-				}
-			})
-		)
-
-		return this.prisma.transaction.findMany({
+		const trans = await this.prisma.transaction.findMany({
 			where: {
-				walletId
+				walletId,
+				createdAt: {
+					gte: frDate,
+					lte: toDate
+				}
 			},
 			orderBy: prismaSort,
 			skip,
@@ -77,6 +59,10 @@ export class TransactionService {
 				}
 			}
 		})
+
+		console.log(trans)
+
+		return trans
 	}
 
 	async bySection(walletId: number, sectionId: number) {
@@ -96,31 +82,101 @@ export class TransactionService {
 		})
 	}
 
-	async create(userId: number, dto: TransactionDto) {
+	async create({ amount, sectionId, walletId }: TransactionDto) {
 		const wallet = await this.prisma.wallet.findFirst({
 			where: {
-				name: dto.wallet,
-				userId
+				id: walletId
 			},
 			include: {
 				sections: {
 					where: {
-						name: dto.section
+						id: sectionId
 					}
 				}
 			}
 		})
 
-		if (!wallet || !wallet.sections.length)
+		if (!wallet || !wallet.sections.length) {
 			throw new BadRequestException(
-				`Cannot create transaction into: wallet - '${dto.wallet}', section - '${dto.section}'`
+				`Cannot create transaction into: wallet - '${walletId}', section - '${sectionId}'`
 			)
+		}
 
-		return this.prisma.transaction.create({
+		const newTransaction = await this.prisma.transaction.create({
 			data: {
-				amount: dto.amount,
-				walletId: wallet.id,
-				sectionId: wallet.sections[0].id
+				amount: amount,
+				walletId: walletId,
+				sectionId: sectionId
+			},
+			include: {
+				wallet: {
+					select: {
+						name: true
+					}
+				},
+				section: {
+					select: {
+						name: true
+					}
+				}
+			}
+		})
+
+		await this.updateSectionAccount(sectionId)
+
+		await this.updateWalletAccount(walletId)
+
+		return {
+			amount: newTransaction.amount,
+			walletName: newTransaction.wallet.name,
+			sectionName: newTransaction.section.name
+		}
+	}
+
+	// update amount of section
+	async updateSectionAccount(sectionId: number) {
+		const { _sum: sectionTransSum } =
+			await this.prisma.transaction.aggregate({
+				where: {
+					sectionId
+				},
+				_sum: {
+					amount: true
+				}
+			})
+
+		await this.prisma.section.update({
+			where: {
+				id: sectionId
+			},
+			data: {
+				amount: sectionTransSum.amount
+			}
+		})
+	}
+
+	// update account of wallet
+	async updateWalletAccount(walletId: number) {
+		const sections = await this.prisma.section.findMany({
+			where: {
+				walletId
+			}
+		})
+
+		const expense = sections
+			.filter(section => section.type === EnumTypeTransaction.EXPENSE)
+			.reduce((sum, section) => sum + section.amount, 0)
+
+		const gain = sections
+			.filter(section => section.type === EnumTypeTransaction.GAIN)
+			.reduce((sum, section) => sum + section.amount, 0)
+
+		await this.prisma.wallet.update({
+			where: {
+				id: walletId
+			},
+			data: {
+				account: gain - expense
 			}
 		})
 	}

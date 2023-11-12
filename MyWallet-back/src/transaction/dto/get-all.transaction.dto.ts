@@ -1,4 +1,4 @@
-import { IsEnum, IsOptional } from 'class-validator'
+import { IsDate, IsEnum, IsOptional } from 'class-validator'
 import { PaginationDto } from 'src/pagination/pagination.dto'
 
 export enum EnumTransactionSort {
@@ -12,4 +12,12 @@ export class GetAllTransactionsDto extends PaginationDto {
 	@IsOptional()
 	@IsEnum(EnumTransactionSort)
 	sort?: EnumTransactionSort
+
+	@IsOptional()
+	@IsDate()
+	frDate?: Date
+
+	@IsOptional()
+	@IsDate()
+	toDate?: Date
 }

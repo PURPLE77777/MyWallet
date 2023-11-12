@@ -37,18 +37,18 @@ export class SectionController {
 	}
 
 	@Auth()
-	@Patch(':walletId')
+	@Patch(':sectionId')
 	@UsePipes(new ValidationPipe())
-	async update(@Param('walletId') walletId: string, @Body() dto: SectionDto) {
-		return this.sectionService.update(+walletId, dto)
+	async update(
+		@Param('sectionId') sectionId: string,
+		@Body() dto: SectionDto
+	) {
+		return this.sectionService.update(+sectionId, dto)
 	}
 
 	@Auth()
-	@Delete(':walletId/:sectionName')
-	async delete(
-		@Param('walletId') walletId: string,
-		@Param('sectionName') sectionName: string
-	) {
-		return this.sectionService.delete(+walletId, sectionName)
+	@Delete(':sectionId')
+	async delete(@Param('sectionId') sectionId: string) {
+		return this.sectionService.delete(+sectionId)
 	}
 }

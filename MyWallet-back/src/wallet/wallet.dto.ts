@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString, Min, MinLength } from 'class-validator'
+import { IsString, MinLength } from 'class-validator'
 
 export class WalletDto {
 	@IsString()
@@ -6,9 +6,4 @@ export class WalletDto {
 		message: 'The name must consist of at least 3 symbol'
 	})
 	name: string
-
-	@IsNumber()
-	@Min(0)
-	@IsOptional()
-	account?: number
 }

@@ -11,7 +11,6 @@ import {
 	ValidationPipe
 } from '@nestjs/common'
 import { Auth } from 'src/decorators/auth.decorator'
-import { CurrentUser } from 'src/decorators/user.decorator'
 import { GetAllTransactionsDto } from './dto/get-all.transaction.dto'
 import { TransactionDto } from './dto/transaction.dto'
 import { TransactionService } from './transaction.service'
@@ -26,7 +25,6 @@ export class TransactionController {
 		@Param('walletId') walletId: string,
 		@Query() dto: GetAllTransactionsDto
 	) {
-		console.log(walletId)
 		return this.transactionService.getAll(+walletId, dto)
 	}
 
@@ -46,14 +44,14 @@ export class TransactionController {
 	}
 
 	@Auth()
-	@Post('create')
+	@Post()
 	@UsePipes(new ValidationPipe())
-	create(@CurrentUser('id') userId: string, @Body() dto: TransactionDto) {
-		return this.transactionService.create(+userId, dto)
+	create(@Body() dto: TransactionDto) {
+		return this.transactionService.create(dto)
 	}
 
 	@Auth()
-	@Patch('update/:transactionId')
+	@Patch(':transactionId')
 	@UsePipes(new ValidationPipe())
 	update(
 		@Param('transactionId') transactionId: string,
