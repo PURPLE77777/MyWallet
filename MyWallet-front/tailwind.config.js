@@ -14,8 +14,9 @@ module.exports = {
 				primaryDarkGray: '#222222',
 				primaryLightGray: '#474747',
 				primaryPurple: '#5A00A3',
-				primatyRed: '#C42021',
-				primaryGreen: '#06F065'
+				primaryRed: '#C42021',
+				primaryGreen: '#06F065',
+				primaryYellow: '#facc14'
 			}
 		}
 	},

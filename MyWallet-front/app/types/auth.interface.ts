@@ -1,3 +1,5 @@
 import { IUser } from './user.interface'
 
-export type IAuth = Pick<IUser, 'email' | 'password'>
+export interface IAuth extends IUser {
+	password: string
+}

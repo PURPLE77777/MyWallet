@@ -3,6 +3,8 @@ import {
 	ITransactionsData
 } from '@AppTypes/transactions.interface'
 
+import { getRandomColor } from '@utils/randomColor'
+
 const getRandomNumber = (min: number, max: number) => {
 	return Math.floor(Math.random() * (max - min + 1)) + min
 }
@@ -36,6 +38,7 @@ const sectionsExpenses = [
 	'Путешествие',
 	'Косметика'
 ]
+
 const getRandomExpenseSection = () => {
 	const randomIndex = Math.floor(Math.random() * sectionsExpenses.length)
 	return sectionsExpenses[randomIndex]
@@ -51,18 +54,10 @@ const sectionsGains = [
 	'Пассивный доход',
 	'Аренда'
 ]
+
 const getRandomGainSection = () => {
 	const randomIndex = Math.floor(Math.random() * sectionsGains.length)
 	return sectionsGains[randomIndex]
-}
-
-export const getRandomColor = (): string => {
-	const letters = '0123456789ABCDEF'
-	let color = '#'
-	for (let i = 0; i < 6; i++) {
-		color += letters[Math.floor(Math.random() * 16)]
-	}
-	return color
 }
 
 export const generateRandomTransactionData = () => {
@@ -102,6 +97,7 @@ export const generateRandomTransactionData = () => {
 
 		transactions.push(newTrans)
 	}
+
 	return {
 		sectionsExpenses,
 		sectionsGains,

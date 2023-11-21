@@ -30,7 +30,7 @@ const Navigation = () => {
 			// await SplashScreen.preventAutoHideAsync()
 			try {
 				await useFonts()
-				await new Promise(resolve => setTimeout(resolve, 3000))
+				await new Promise(resolve => setTimeout(resolve, 1000))
 			} catch (e) {
 				console.warn(e)
 			} finally {
@@ -52,7 +52,7 @@ const Navigation = () => {
 			<View className='flex-1 items-center justify-center bg-primaryLightGray'>
 				<Text className='text-3xl text-white'>Loading...</Text>
 				<ActivityIndicator
-					animating={!isFontLoaded} //
+					animating={!isFontLoaded}
 					size='large'
 					color={COLORS.primaryPurple}
 				/>
@@ -71,7 +71,7 @@ const Navigation = () => {
 				<PrivateNavigation />
 			</NavigationContainer>
 
-			{currentRoute && true && (
+			{currentRoute && user && (
 				<BottomMenu
 					navigate={navigation.navigate}
 					currentRoute={currentRoute}

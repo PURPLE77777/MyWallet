@@ -1,95 +1,184 @@
-import cn from 'clsx'
-import { useEffect, useState } from 'react'
-import { ScrollView, Text, View } from 'react-native'
+import { DateTimePickerEvent } from '@react-native-community/datetimepicker'
+import { useNavigation } from '@react-navigation/native'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import clsx from 'clsx'
+import { FC, useState } from 'react'
+import {
+	ActivityIndicator,
+	ScrollView,
+	TouchableOpacity,
+	View
+} from 'react-native'
 
-import { generateRandomTransactionData } from '@constants/transactions.constant'
+import { COLORS } from '@constants/colors.constants'
+import { monthsRu } from '@constants/month.ru.constants'
 
-import { ITransactionsData } from '@AppTypes/transactions.interface'
+import {
+	EnumTransactionSort,
+	ITransactionResponse
+} from '@services/transaction/transaction.dto'
+import TransactionService from '@services/transaction/transaction.service'
 
-const LastTransactions = () => {
-	const [transactions, setTransactions] = useState<ITransactionsData[]>([])
+import { IDateSelection } from '@AppTypes/pagination.dto'
+import { EnumTypeTransaction } from '@AppTypes/section.interface'
+import { IWallet, WalletsType } from '@AppTypes/waller.interface'
 
-	useEffect(() => {
-		const data = generateRandomTransactionData()
+import { dateFrFormat, dateToFormat } from '@utils/dateformatFrDate'
 
-		const copyTrans: ITransactionsData[] = JSON.parse(
-			JSON.stringify(data.transactions)
-		)
-		const sortedTrans = copyTrans.sort((first, sec) => {
-			const firstDate = new Date(first.date)
-			const secDate = new Date(sec.date)
-			if (firstDate.getTime() > secDate.getTime()) return -1
-			else if (firstDate.getTime() < secDate.getTime()) return 1
-			else return 0
+import DatePickerRange from '@ui/date-picker-range/DatePickerRange'
+import Icon from '@ui/icons/Icon'
+import Txt from '@ui/text/Txt'
+
+interface ILastTransactions {
+	wallet: IWallet
+}
+
+const LastTransactions: FC<ILastTransactions> = ({ wallet }) => {
+	const curDate = new Date(),
+		startMCurDate = new Date(curDate.getFullYear(), curDate.getMonth(), 1)
+	const queryClient = useQueryClient()
+	const [dateStart, setDateStart] = useState(dateToFormat(startMCurDate))
+	const [dateEnd, setDateEnd] = useState(dateToFormat(curDate))
+
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	const { navigate } = useNavigation<WalletsType>()
+
+	const { data, isFetching } = useQuery({
+		queryKey: ['last_transactions', wallet.id],
+		queryFn: async () => {
+			const response = await TransactionService.getAll(wallet.id, {
+				sort: EnumTransactionSort.NEWEST,
+				frDate: dateFrFormat(dateStart),
+				toDate: dateFrFormat(dateEnd)
+				// perPage: 1,
+				// page: 1
+			})
+
+			return response
+		}
+	})
+
+	const { mutate: mutateTrans, isLoading: isMutating } = useMutation({
+		mutationFn: async (data: IDateSelection) => {
+			return await TransactionService.getAll(wallet.id, {
+				sort: EnumTransactionSort.NEWEST,
+				...data
+				// perPage: 1,
+				// page: 1
+			})
+		},
+		onSuccess: data => {
+			queryClient.setQueryData(['last_transactions', wallet.id], data)
+		}
+	})
+
+	const formatDate = (date: Date) => {
+		const year = date.getFullYear(),
+			month = date.getMonth(),
+			day = date.getDate(),
+			hour = date.getHours(),
+			minute = date.getMinutes()
+
+		return `${day > 9 ? day : `0${day}`} ${monthsRu[month]} ${year} ${
+			hour > 9 ? hour : `0${hour}`
+		}:${minute > 9 ? minute : `0${minute}`}`
+	}
+
+	const onStartDateChange = (event: DateTimePickerEvent, date?: Date) => {
+		mutateTrans({
+			frDate: date,
+			toDate: dateFrFormat(dateEnd)
 		})
-		setTransactions(sortedTrans.slice(0, 7))
-	}, [])
+	}
 
-	const monthsRu = [
-		'января',
-		'февраля',
-		'марта',
-		'апреля',
-		'мая',
-		'июня',
-		'июля',
-		'августа',
-		'сентября',
-		'октября',
-		'ноября',
-		'декабря'
-	]
+	const onEndDateChange = (event: DateTimePickerEvent, date?: Date) => {
+		mutateTrans({
+			frDate: dateFrFormat(dateStart),
+			toDate: date
+		})
+	}
+
+	const onTransactionPress = (transaction: ITransactionResponse) => {
+		// console.log(navigation)
+		navigate('TransactionProfile', {
+			wallet,
+			transaction
+		})
+	}
 
 	return (
-		<ScrollView className='mx-5 h-[250px] rounded-[10px] bg-primaryLightGray px-3'>
-			{transactions.map((transaction, ind) => {
-				const gains = transaction.gains.reduce(
-					(prev, gain) => prev + gain.amount,
-					0
-				)
-				const expenses = transaction.expenses.reduce(
-					(prev, expense) => prev + expense.amount,
-					0
-				)
-
-				const result = gains - expenses
-
-				const transDate = new Date(transaction.date)
-
-				return (
-					<View
-						className='rounded-md border-[3px] border-solid border-transparent'
-						key={`transaction-${ind}`}
-					>
-						<Text className='text-center font-comfortaa text-lg text-white'>
-							{`${transDate.getDate()} ${
-								monthsRu[transDate.getMonth()]
-							} ${transDate.getFullYear()}`}
-						</Text>
-						<View className='flex-row justify-between'>
-							<Text className='font-comfortaa text-lg text-white'>
-								{result > 0 ? 'Up' : result < 0 ? 'Down' : 'No changes'}
-							</Text>
-
-							{/* Graphic */}
-
-							<Text
-								className={cn(
-									'font-comfortaa text-lg',
-									result > 0
-										? 'text-primaryGreen'
-										: result < 0
-										? 'text-primatyRed'
-										: 'text-gray-400'
-								)}
+		<View className='mt-5 w-full flex-1 items-center '>
+			<DatePickerRange
+				cNView='rounded-t-[10px] bg-primaryLightGray p-3'
+				cNBtns='h-[30px]'
+				styleText='text-[14px]'
+				onStartDateChange={onStartDateChange}
+				onEndDateChange={onEndDateChange}
+				dateStart={dateStart}
+				dateEnd={dateEnd}
+				setDateStart={setDateStart}
+				setDateEnd={setDateEnd}
+			/>
+			<View className='w-full flex-1 rounded-[10px] bg-primaryLightGray px-3'>
+				{isFetching || isMutating ? (
+					<ActivityIndicator
+						className='h-full w-full'
+						animating={isFetching || isMutating}
+						size='large'
+						color={COLORS.primaryDarkGray}
+					/>
+				) : data?.length ? (
+					<ScrollView showsVerticalScrollIndicator={false}>
+						{data.map((transaction, index) => (
+							<TouchableOpacity
+								className='flex-row items-center justify-between'
+								key={`last_transactions-${transaction.id}`}
+								activeOpacity={0.5}
+								onPress={() => onTransactionPress(transaction)}
 							>
-								{result > 0 ? `+${result} BYN` : `${result} BYN`}
-							</Text>
-						</View>
+								<View
+									className={clsx(transaction.section.color, 'rounded-md p-1')}
+								>
+									<Icon name={transaction.section.icon} size={38} />
+								</View>
+								<View
+									className={clsx(
+										'ml-4 flex-grow flex-row items-center justify-between py-2',
+										index !== data.length - 1
+											? 'border-b-2 border-solid border-white'
+											: ''
+									)}
+								>
+									<View>
+										<Txt className='text-sm'>
+											{formatDate(new Date(transaction.createdAt))}
+										</Txt>
+										<Txt className='text-sm'>{transaction.section.name}</Txt>
+									</View>
+									<Txt
+										className={clsx(
+											'font-comfortaaBold',
+											transaction.section.type === EnumTypeTransaction.GAIN
+												? 'text-primaryGreen'
+												: 'text-primaryRed'
+										)}
+									>
+										{transaction.section.type === EnumTypeTransaction.GAIN
+											? transaction.amount
+											: '-' + transaction.amount}
+									</Txt>
+								</View>
+							</TouchableOpacity>
+						))}
+					</ScrollView>
+				) : (
+					<View className='h-full w-full items-center justify-center'>
+						<Txt>No transactions</Txt>
 					</View>
-				)
-			})}
-		</ScrollView>
+				)}
+			</View>
+		</View>
 	)
 }
 

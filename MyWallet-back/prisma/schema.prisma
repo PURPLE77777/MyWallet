@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  password  String
+  wallets   Wallet[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model Wallet {
+  id           Int           @id @default(autoincrement())
+  name         String
+  account      Int           @default(0)
+  user         User          @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId       Int           @map("user_id")
+  image        String?
+  sections     Section[]
+  transactions Transaction[]
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @default(now()) @updatedAt @map("updated_at")
+
+  @@map("wallets")
+}
+
+model Section {
+  id           Int                 @id @default(autoincrement())
+  name         String
+  type         EnumTypeTransaction
+  amount       Int                 @default(0)
+  icon         String
+  color        String
+  wallet       Wallet              @relation(fields: [walletId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  walletId     Int                 @map("wallet_id")
+  transactions Transaction[]
+  createdAt    DateTime            @default(now()) @map("created_at")
+  updatedAt    DateTime            @default(now()) @updatedAt @map("updated_at")
+
+  @@map("sections")
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  amount    Int
+  wallet    Wallet   @relation(fields: [walletId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  walletId  Int      @map("wallet_id")
+  section   Section  @relation(fields: [sectionId], references: [id])
+  sectionId Int      @map("section_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("transactions")
+}
+
+enum EnumTypeTransaction {
+  GAIN
+  EXPENSE
+}
