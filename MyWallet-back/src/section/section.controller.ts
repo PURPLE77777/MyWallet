@@ -6,10 +6,12 @@ import {
 	Param,
 	Patch,
 	Post,
+	Query,
 	UsePipes,
 	ValidationPipe
 } from '@nestjs/common'
 import { Auth } from 'src/decorators/auth.decorator'
+import { GetSectionsDto } from './dto/get-all.transactions'
 import { SectionDto } from './section.dto'
 import { SectionService } from './section.service'
 
@@ -19,8 +21,11 @@ export class SectionController {
 
 	@Auth()
 	@Get(':walletId')
-	async getAll(@Param('walletId') walletId: string) {
-		return this.sectionService.getAll(+walletId)
+	async getAll(
+		@Param('walletId') walletId: string,
+		@Query() dto?: GetSectionsDto
+	) {
+		return this.sectionService.getAll(+walletId, dto)
 	}
 
 	@Auth()

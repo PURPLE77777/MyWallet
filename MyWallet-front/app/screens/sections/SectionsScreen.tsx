@@ -7,7 +7,7 @@ import Layout from '@ui/layout/Layout'
 
 import SectionPreview from './components/SectionPreview'
 import SwitchBtns from './components/SwitchBtns'
-import { SelectedSectionType } from './type/section.interface'
+import { SelectedSectionType } from './types/section.interface'
 
 const SectionsScreen = () => {
 	const [typeTransactions, setTypeTransactions] = useState<EnumTypeTransaction>(
@@ -19,8 +19,9 @@ const SectionsScreen = () => {
 
 	return (
 		<Layout title="Wallet's sections">
-			<View className='flex-1'>
+			<View className='flex-1 items-center'>
 				<SwitchBtns
+					cN='mt-3'
 					typeTransactions={typeTransactions}
 					setTypeTransactions={setTypeTransactions}
 					setSelectedSection={setSelectedSection}

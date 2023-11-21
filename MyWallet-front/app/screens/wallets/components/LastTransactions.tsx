@@ -1,18 +1,27 @@
-import DateTimePicker, {
-	DateTimePickerEvent
-} from '@react-native-community/datetimepicker'
+import { DateTimePickerEvent } from '@react-native-community/datetimepicker'
+import { useNavigation } from '@react-navigation/native'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import clsx from 'clsx'
-import { FC, useRef, useState } from 'react'
-import { ActivityIndicator, ScrollView, View } from 'react-native'
+import { FC, useState } from 'react'
+import {
+	ActivityIndicator,
+	ScrollView,
+	TouchableOpacity,
+	View
+} from 'react-native'
 
 import { COLORS } from '@constants/colors.constants'
 import { monthsRu } from '@constants/month.ru.constants'
 
-import { EnumTransactionSort } from '@services/transaction/transaction.dto'
+import {
+	EnumTransactionSort,
+	ITransactionResponse
+} from '@services/transaction/transaction.dto'
 import TransactionService from '@services/transaction/transaction.service'
 
-import { IWallet } from '@AppTypes/waller.interface'
+import { IDateSelection } from '@AppTypes/pagination.dto'
+import { EnumTypeTransaction } from '@AppTypes/section.interface'
+import { IWallet, WalletsType } from '@AppTypes/waller.interface'
 
 import { dateFrFormat, dateToFormat } from '@utils/dateformatFrDate'
 
@@ -28,11 +37,12 @@ const LastTransactions: FC<ILastTransactions> = ({ wallet }) => {
 	const curDate = new Date(),
 		startMCurDate = new Date(curDate.getFullYear(), curDate.getMonth(), 1)
 	const queryClient = useQueryClient()
-	const [datePickerShow, setDatePickerShow] = useState(false)
 	const [dateStart, setDateStart] = useState(dateToFormat(startMCurDate))
 	const [dateEnd, setDateEnd] = useState(dateToFormat(curDate))
 
-	const typeDate = useRef<'start' | 'end'>('start')
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	const { navigate } = useNavigation<WalletsType>()
 
 	const { data, isFetching } = useQuery({
 		queryKey: ['last_transactions', wallet.id],
@@ -50,17 +60,10 @@ const LastTransactions: FC<ILastTransactions> = ({ wallet }) => {
 	})
 
 	const { mutate: mutateTrans, isLoading: isMutating } = useMutation({
-		mutationFn: async ({
-			frDate,
-			toDate
-		}: {
-			frDate?: Date
-			toDate?: Date
-		}) => {
+		mutationFn: async (data: IDateSelection) => {
 			return await TransactionService.getAll(wallet.id, {
 				sort: EnumTransactionSort.NEWEST,
-				frDate: frDate || dateFrFormat(dateStart),
-				toDate: toDate || dateFrFormat(dateEnd)
+				...data
 				// perPage: 1,
 				// page: 1
 			})
@@ -82,70 +85,42 @@ const LastTransactions: FC<ILastTransactions> = ({ wallet }) => {
 		}:${minute > 9 ? minute : `0${minute}`}`
 	}
 
-	const onPressStartDate = () => {
-		typeDate.current = 'start'
-		setDatePickerShow(true)
+	const onStartDateChange = (event: DateTimePickerEvent, date?: Date) => {
+		mutateTrans({
+			frDate: date,
+			toDate: dateFrFormat(dateEnd)
+		})
 	}
 
-	const onPressEndDate = () => {
-		typeDate.current = 'end'
-		setDatePickerShow(true)
+	const onEndDateChange = (event: DateTimePickerEvent, date?: Date) => {
+		mutateTrans({
+			frDate: dateFrFormat(dateStart),
+			toDate: date
+		})
 	}
 
-	const onDateChange = (event: DateTimePickerEvent, date?: Date) => {
-		if (date) {
-			const newDate = dateToFormat(date)
-			if (typeDate.current === 'start' && dateStart !== newDate) {
-				setDateStart(newDate)
-				mutateTrans({
-					frDate: date
-				})
-			} else if (dateEnd !== newDate) {
-				setDateEnd(newDate)
-				mutateTrans({
-					toDate: date
-				})
-			}
-		}
-
-		setDatePickerShow(false)
+	const onTransactionPress = (transaction: ITransactionResponse) => {
+		// console.log(navigation)
+		navigate('TransactionProfile', {
+			wallet,
+			transaction
+		})
 	}
 
 	return (
-		<View className='relative mt-5 w-full flex-1 items-center '>
-			{/* <View className='absolute z-10 flex-row justify-center rounded-t-[10px] bg-primaryLightGray p-3'>
-				<Button
-					text={dateStart}
-					className='rounded-r-2xl'
-					onPress={onPressStartDate}
-				/>
-				<View className='w-[6px] bg-black' />
-				<Button
-					className='rounded-l-2xl'
-					text={dateEnd}
-					onPress={onPressEndDate}
-				/>
-			</View> */}
+		<View className='mt-5 w-full flex-1 items-center '>
 			<DatePickerRange
-				cN='absolute z-10 rounded-t-[10px] bg-primaryLightGray p-3'
+				cNView='rounded-t-[10px] bg-primaryLightGray p-3'
+				cNBtns='h-[30px]'
+				styleText='text-[14px]'
+				onStartDateChange={onStartDateChange}
+				onEndDateChange={onEndDateChange}
 				dateStart={dateStart}
 				dateEnd={dateEnd}
-				onDateStartPress={onPressStartDate}
-				onDateEndPress={onPressEndDate}
+				setDateStart={setDateStart}
+				setDateEnd={setDateEnd}
 			/>
-			<View className='mt-[64px] w-full rounded-[10px] bg-primaryLightGray px-3'>
-				{datePickerShow && !isFetching && !isMutating && (
-					<DateTimePicker
-						value={
-							typeDate.current === 'start'
-								? dateFrFormat(dateStart)
-								: dateFrFormat(dateEnd)
-						}
-						onChange={onDateChange}
-						themeVariant='dark'
-						display='spinner'
-					/>
-				)}
+			<View className='w-full flex-1 rounded-[10px] bg-primaryLightGray px-3'>
 				{isFetching || isMutating ? (
 					<ActivityIndicator
 						className='h-full w-full'
@@ -154,55 +129,49 @@ const LastTransactions: FC<ILastTransactions> = ({ wallet }) => {
 						color={COLORS.primaryDarkGray}
 					/>
 				) : data?.length ? (
-					<>
-						<ScrollView showsVerticalScrollIndicator={false}>
-							{data.map(
-								(
-									{
-										amount,
-										id,
-										createdAt,
-										section: { type, name, icon, color }
-									},
-									index
-								) => (
-									<View
-										className='flex-row items-center justify-between'
-										key={`last_transactions-${id}`}
-									>
-										<View className={clsx(color, 'rounded-md p-1')}>
-											<Icon name={icon} size={38} />
-										</View>
-										<View
-											className={clsx(
-												'ml-4 flex-grow flex-row items-center justify-between py-2',
-												index !== data.length - 1
-													? 'border-b-2 border-solid border-white'
-													: ''
-											)}
-										>
-											<View>
-												<Txt className='text-sm'>
-													{formatDate(new Date(createdAt))}
-												</Txt>
-												<Txt className='text-sm'>{name}</Txt>
-											</View>
-											<Txt
-												className={clsx(
-													'font-comfortaaBold',
-													type === 'GAIN'
-														? 'text-primaryGreen'
-														: 'text-primatyRed'
-												)}
-											>
-												{type === 'GAIN' ? amount : '-' + amount}
-											</Txt>
-										</View>
+					<ScrollView showsVerticalScrollIndicator={false}>
+						{data.map((transaction, index) => (
+							<TouchableOpacity
+								className='flex-row items-center justify-between'
+								key={`last_transactions-${transaction.id}`}
+								activeOpacity={0.5}
+								onPress={() => onTransactionPress(transaction)}
+							>
+								<View
+									className={clsx(transaction.section.color, 'rounded-md p-1')}
+								>
+									<Icon name={transaction.section.icon} size={38} />
+								</View>
+								<View
+									className={clsx(
+										'ml-4 flex-grow flex-row items-center justify-between py-2',
+										index !== data.length - 1
+											? 'border-b-2 border-solid border-white'
+											: ''
+									)}
+								>
+									<View>
+										<Txt className='text-sm'>
+											{formatDate(new Date(transaction.createdAt))}
+										</Txt>
+										<Txt className='text-sm'>{transaction.section.name}</Txt>
 									</View>
-								)
-							)}
-						</ScrollView>
-					</>
+									<Txt
+										className={clsx(
+											'font-comfortaaBold',
+											transaction.section.type === EnumTypeTransaction.GAIN
+												? 'text-primaryGreen'
+												: 'text-primaryRed'
+										)}
+									>
+										{transaction.section.type === EnumTypeTransaction.GAIN
+											? transaction.amount
+											: '-' + transaction.amount}
+									</Txt>
+								</View>
+							</TouchableOpacity>
+						))}
+					</ScrollView>
 				) : (
 					<View className='h-full w-full items-center justify-center'>
 						<Txt>No transactions</Txt>

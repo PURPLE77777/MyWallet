@@ -1,4 +1,5 @@
 import { IPagination } from '@AppTypes/pagination.dto'
+import { ISection } from '@AppTypes/section.interface'
 
 export interface GetAllTransactionsDto extends IPagination {
 	sort?: EnumTransactionSort
@@ -9,20 +10,15 @@ export interface GetAllTransactionsDto extends IPagination {
 export interface ITransactionResponse {
 	id: number
 	amount: number
-	section: {
-		type: string
-		name: string
-		icon: string
-		color: string
-	}
+	section: ISection
 	createdAt: Date
 }
 
-export interface ITransactionResponse {
-	amount: number
-	walletName: string
-	sectionName: string
-}
+// export interface ITransactionResponse {
+// 	amount: number
+// 	walletName: string
+// 	sectionName: string
+// }
 
 export enum EnumTransactionSort {
 	HIGH_AMOUNT,

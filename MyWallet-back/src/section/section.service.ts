@@ -4,18 +4,48 @@ import {
 	NotFoundException
 } from '@nestjs/common'
 import { PrismaService } from 'src/prisma.service'
+import { GetSectionsDto } from './dto/get-all.transactions'
 import { SectionDto } from './section.dto'
 
 @Injectable()
 export class SectionService {
 	constructor(private readonly prisma: PrismaService) {}
 
-	async getAll(walletId: number) {
-		return this.prisma.section.findMany({
+	async getAll(walletId: number, dto?: GetSectionsDto) {
+		const isDtoFull = !!Object.keys(dto).length
+
+		const sections = await this.prisma.section.findMany({
 			where: {
 				walletId
+			},
+			include: {
+				transactions: isDtoFull
 			}
 		})
+
+		if (!isDtoFull) return sections
+
+		sections.forEach(section => {
+			const transactions = section.transactions.filter(transaction => {
+				const newToDate = new Date(dto.toDate)
+				newToDate.setDate(newToDate.getDate() + 1)
+				return (
+					new Date(transaction.createdAt).getTime() >=
+						new Date(dto.frDate).getTime() &&
+					new Date(transaction.createdAt).getTime() <=
+						newToDate.getTime()
+				)
+			})
+
+			section.amount = transactions.reduce(
+				(sum, trans) => sum + trans.amount,
+				0
+			)
+
+			delete section.transactions
+		})
+
+		return sections
 	}
 
 	async byId(sectionId: number) {

@@ -6,7 +6,7 @@ import {
 	EnumTransactionSort,
 	GetAllTransactionsDto
 } from './dto/get-all.transaction.dto'
-import { TransactionDto } from './dto/transaction.dto'
+import { TransactionDto, TransactionUpdateDto } from './dto/transaction.dto'
 
 @Injectable()
 export class TransactionService {
@@ -37,12 +37,16 @@ export class TransactionService {
 
 		const { perPage, skip } = this.paginationService.getPagination(dto)
 
+		const newToDate = new Date(toDate)
+
+		newToDate.setDate(newToDate.getDate() + 1)
+
 		const trans = await this.prisma.transaction.findMany({
 			where: {
 				walletId,
 				createdAt: {
 					gte: frDate,
-					lte: toDate
+					lt: newToDate
 				}
 			},
 			orderBy: prismaSort,
@@ -181,22 +185,48 @@ export class TransactionService {
 		})
 	}
 
-	async update(transactionId: number, amount: number) {
-		return this.prisma.transaction.update({
+	async update(transactionId: number, dto: TransactionUpdateDto) {
+		const transaction = await this.prisma.transaction.findUnique({
+			where: {
+				id: transactionId
+			}
+		})
+
+		if (!transaction) throw new BadRequestException('No such transaction')
+
+		const updatedTransaction = await this.prisma.transaction.update({
 			where: {
 				id: transactionId
 			},
 			data: {
-				amount: amount
+				...dto
 			}
 		})
+
+		await this.updateSectionAccount(transaction.sectionId)
+		await this.updateWalletAccount(transaction.walletId)
+
+		return updatedTransaction
 	}
 
 	async delete(transactionId: number) {
-		return this.prisma.transaction.delete({
+		const transaction = await this.prisma.transaction.findUnique({
 			where: {
 				id: transactionId
 			}
 		})
+
+		if (!transaction) throw new BadRequestException('No such transaction')
+
+		const deletedTransaction = await this.prisma.transaction.delete({
+			where: {
+				id: transactionId
+			}
+		})
+
+		await this.updateSectionAccount(transaction.sectionId)
+		await this.updateWalletAccount(transaction.walletId)
+
+		return deletedTransaction
 	}
 }

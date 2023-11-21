@@ -17,3 +17,5 @@ export interface IWalletNameAccount {
 }
 
 export type IWalletName = Pick<IWallet, 'name'>
+
+export type WalletsType = NativeStackScreenProps<RootStackParamList, 'Wallets'>

@@ -36,7 +36,7 @@ const PieChart: FC<IPieChart> = ({ data, size }) => {
 	return (
 		<View className='my-5 items-center justify-center'>
 			<VictoryPie
-				data={data}
+				data={data.filter(section => section.amount > 0)}
 				colorScale={pieColors}
 				x='name'
 				y='amount'

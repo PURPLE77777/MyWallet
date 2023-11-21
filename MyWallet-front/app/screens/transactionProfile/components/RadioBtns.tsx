@@ -10,20 +10,25 @@ interface ISectionsDropMenu {
 	typeTransaction: EnumTypeTransaction
 	setTypeTransaaction: Dispatch<SetStateAction<EnumTypeTransaction>>
 	setSelSection: Dispatch<SetStateAction<ISection | null>>
+	active?: boolean
 }
 
 const RadioBtns: FC<ISectionsDropMenu> = ({
 	typeTransaction,
 	setTypeTransaaction,
-	setSelSection
+	setSelSection,
+	active = true
 }) => {
 	return (
 		<View className='mt-5 flex-row justify-around'>
 			<Pressable
+				accessible={active}
 				className='flex-row items-center'
 				onPress={() => {
-					setTypeTransaaction(EnumTypeTransaction.GAIN)
-					setSelSection(null)
+					if (active) {
+						setTypeTransaaction(EnumTypeTransaction.GAIN)
+						setSelSection(null)
+					}
 				}}
 			>
 				<View className='h-[20px] w-[20px] rounded-full border-[2px] border-solid border-white'>
@@ -37,10 +42,13 @@ const RadioBtns: FC<ISectionsDropMenu> = ({
 				<Txt className='ml-[15px]'>Gain</Txt>
 			</Pressable>
 			<Pressable
+				accessible={active}
 				className='flex-row items-center'
 				onPress={() => {
-					setTypeTransaaction(EnumTypeTransaction.EXPENSE)
-					setSelSection(null)
+					if (active) {
+						setTypeTransaaction(EnumTypeTransaction.EXPENSE)
+						setSelSection(null)
+					}
 				}}
 			>
 				<View className='h-[20px] w-[20px] rounded-full border-[2px] border-solid border-white'>

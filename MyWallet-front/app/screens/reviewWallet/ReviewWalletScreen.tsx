@@ -12,7 +12,10 @@ import { useActions } from '@hooks/useActions'
 import Button from '@ui/button/Button'
 import Layout from '@ui/layout/Layout'
 
-const ReviewWalletScreen: FC<ReviewWalletType> = ({ route }) => {
+const ReviewWalletScreen: FC<ReviewWalletType> = ({
+	route,
+	navigation: { navigate }
+}) => {
 	const wallet = route.params?.wallet
 
 	const { createWallet, updateWallet, getUserWallets } = useActions()
@@ -32,6 +35,7 @@ const ReviewWalletScreen: FC<ReviewWalletType> = ({ route }) => {
 			createWallet(data)
 		}
 		getUserWallets()
+		navigate('Wallets')
 	}
 
 	return (

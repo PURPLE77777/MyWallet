@@ -15,13 +15,17 @@ const Button: FC<IButton> = ({ text, cN, styleText, ...attrs }) => {
 		<TouchableOpacity
 			activeOpacity={0.5}
 			className={clsx(
-				'h-[40px] items-center justify-center rounded-full bg-[#facc14] px-3',
+				'h-[40px] items-center justify-center rounded-full bg-primaryYellow px-3',
 				cN
 			)}
 			{...attrs}
 		>
 			<Txt
-				className={clsx('font-comfortaaBold text-primaryDarkGray', styleText)}
+				className={clsx(
+					'font-comfortaaBold text-primaryDarkGray',
+					styleText,
+					'font-black'
+				)}
 			>
 				{text}
 			</Txt>

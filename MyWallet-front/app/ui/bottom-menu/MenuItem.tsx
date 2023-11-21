@@ -33,16 +33,8 @@ const MenuItem: FC<IMenuItem> = ({ item, num, currentRoute, navigate }) => {
 		<TouchableHighlight
 			className={clsx(
 				'h-[50px] w-[25%] items-center justify-center',
-				'bg-primaryLightGray'
-				// num == 0
-				// 	? 'bg-primaryLightGray'
-				// 	: num == 1
-				// 	? 'bg-primaryDarkGray'
-				// 	: num == 2
-				// 	? 'bg-primaryGreen'
-				// 	: num == 3
-				// 	? 'bg-primaryPurple'
-				// 	: ''
+				'bg-primaryLightGray',
+				currentRoute === item.path && 'bg-primaryDarkGray'
 			)}
 			onPress={() => nav(item.path)}
 		>

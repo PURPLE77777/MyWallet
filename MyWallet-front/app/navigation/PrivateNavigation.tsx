@@ -44,7 +44,7 @@ const PrivateNavigation: FC = () => {
 				// 	))}
 				// </Tab.Navigator>
 				routes.map(route => (
-					<Tab.Screen
+					<Stack.Screen
 						name={route.name}
 						component={route.component}
 						key={route.name}

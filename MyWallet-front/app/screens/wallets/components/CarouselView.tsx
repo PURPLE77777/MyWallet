@@ -94,7 +94,7 @@ const CarouselView: FC<ICarouselView> = ({ wallets }) => {
 										+item.account > 0
 											? 'text-primaryGreen'
 											: +item.account < 0
-											? 'text-primatyRed'
+											? 'text-primaryRed'
 											: ''
 									)}
 								>

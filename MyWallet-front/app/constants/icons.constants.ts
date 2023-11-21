@@ -6,13 +6,13 @@ type IconNames = Omit<RootStackParamList, 'Auth'>
 
 // type IconNames = Omit<RootStackParamList, 'Auth'>
 
-type OmitTypes = 'ReviewWallet' | 'SectionProfile'
+type OmitTypes = 'ReviewWallet' | 'SectionProfile' | 'TransactionProfile'
 
 export const ICONS: Omit<Record<keyof IconNames, IIcons>, OmitTypes> = {
 	Wallets: 'credit-card-multiple',
-	SectionsCnf: 'settings',
+	SectionsCnf: 'grid',
 	Profile: 'account',
-	Statistics: 'circular-graph'
+	Statistics: 'piechart'
 }
 
 export const EXPENSES_ICONS = ['heartbeat', 'wallet', 'home', 'food-fork-drink']

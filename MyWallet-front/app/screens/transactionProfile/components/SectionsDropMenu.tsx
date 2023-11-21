@@ -15,6 +15,7 @@ interface ISectionsDropMenu {
 	selSectionError: boolean
 	setSelSectionError: Dispatch<SetStateAction<boolean>>
 	setShowMenu: Dispatch<SetStateAction<boolean>>
+	active?: boolean
 }
 
 const SectionsDropMenu: FC<ISectionsDropMenu> = ({
@@ -24,7 +25,8 @@ const SectionsDropMenu: FC<ISectionsDropMenu> = ({
 	sections,
 	selSection,
 	setSelSection,
-	setSelSectionError
+	setSelSectionError,
+	active = true
 }) => {
 	const dropdownMenuHandle = (section: ISection) => {
 		setShowMenu(false)
@@ -33,7 +35,7 @@ const SectionsDropMenu: FC<ISectionsDropMenu> = ({
 	}
 
 	const Item: FC<{ section: ISection }> = ({ section }) => (
-		<TouchableHighlight onPress={() => dropdownMenuHandle(section)}>
+		<TouchableHighlight onPress={() => active && dropdownMenuHandle(section)}>
 			<Txt>{section.name}</Txt>
 		</TouchableHighlight>
 	)
@@ -47,9 +49,10 @@ const SectionsDropMenu: FC<ISectionsDropMenu> = ({
 						'flex-row items-center justify-between rounded-xl border-4 border-solid bg-gray-700 px-3 py-2',
 						selSectionError ? 'border-primatyRed' : 'border-primaryPurple'
 					)}
-					onPress={() => setShowMenu(!showMenu)}
+					onPress={() => active && setShowMenu(!showMenu)}
 					activeOpacity={0.5}
 					underlayColor={'#14171c'}
+					accessible={active}
 				>
 					<>
 						<Txt>{selSection ? selSection.name : 'Select section'}</Txt>
@@ -62,7 +65,7 @@ const SectionsDropMenu: FC<ISectionsDropMenu> = ({
 						</View>
 					</>
 				</TouchableHighlight>
-				{showMenu && sections && (
+				{showMenu && sections && active && (
 					<FlatList
 						className='absolute left-[4px] top-[90%] w-[98%] bg-gray-700'
 						data={sections}

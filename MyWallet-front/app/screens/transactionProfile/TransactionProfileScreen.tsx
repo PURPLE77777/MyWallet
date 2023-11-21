@@ -24,15 +24,17 @@ import { ITransationRequest } from './types/transaction.types'
 
 const TransactionProfileScreen: FC<TransactionProfileType> = ({
 	route: {
-		params: { wallet },
+		params: { wallet, transaction },
 		name
 	},
 	navigation: { navigate }
 }) => {
-	const [selSection, setSelSection] = useState<ISection | null>(null)
+	const [selSection, setSelSection] = useState<ISection | null>(
+		transaction?.section || null
+	)
 	const [selSectionError, setSelSectionError] = useState<boolean>(false)
 	const [typeTransaction, setTypeTransaaction] = useState<EnumTypeTransaction>(
-		EnumTypeTransaction.GAIN
+		transaction?.section.type || EnumTypeTransaction.GAIN
 	)
 	const [showMenu, setShowMenu] = useState<boolean>(false)
 	const { getUserWallets } = useActions()
@@ -48,22 +50,34 @@ const TransactionProfileScreen: FC<TransactionProfileType> = ({
 	const { control, handleSubmit, reset } = useForm<ITransationRequest>({
 		mode: 'onChange',
 		defaultValues: {
-			amount: 0
+			amount: transaction?.amount || 0
 		}
 	})
 
-	const onSubmit = async (data: ITransationRequest) => {
+	const onSubmit = (data: ITransationRequest) => {
 		if (selSection && wallet && data.amount) {
 			data.amount = parseInt(data.amount as string)
 			data.sectionId = selSection.id
 			data.walletId = wallet.id
-			const newTransaction = await TransactionService.addTransaction(data)
-			console.log('newTransaction', newTransaction)
-			getUserWallets()
+			transaction
+				? TransactionService.updateTransaction(transaction.id, data)
+				: TransactionService.addTransaction(data)
+			onWalletsScreen()
 		} else {
 			setSelSectionError(true)
 		}
 	}
+
+	const onDelete = () => {
+		transaction && TransactionService.deleteTransaction(transaction.id)
+		onWalletsScreen()
+	}
+
+	const onWalletsScreen = () => {
+		getUserWallets()
+		navigate('Wallets')
+	}
+
 	return (
 		<Layout title='Add transaction'>
 			<Pressable
@@ -78,6 +92,7 @@ const TransactionProfileScreen: FC<TransactionProfileType> = ({
 							typeTransaction={typeTransaction}
 							setTypeTransaaction={setTypeTransaaction}
 							setSelSection={setSelSection}
+							active={!transaction}
 						/>
 
 						<SectionsDropMenu
@@ -90,6 +105,7 @@ const TransactionProfileScreen: FC<TransactionProfileType> = ({
 								section => section.type === typeTransaction
 							)}
 							setSelSection={setSelSection}
+							active={!transaction}
 						/>
 
 						<Txt className='ml-2'>Amount:</Txt>
@@ -131,7 +147,23 @@ const TransactionProfileScreen: FC<TransactionProfileType> = ({
 						/>
 					</View>
 				</View>
-				<Button text={'Add'} onPress={handleSubmit(onSubmit)} />
+
+				{transaction ? (
+					<View className='w-full flex-row justify-between'>
+						<Button
+							text={'Save'}
+							className='basis-[45%] bg-primaryGreen'
+							onPress={handleSubmit(onSubmit)}
+						/>
+						<Button
+							text={'Delete'}
+							className='basis-[45%] bg-primaryRed'
+							onPress={onDelete}
+						/>
+					</View>
+				) : (
+					<Button text={'Add'} onPress={handleSubmit(onSubmit)} />
+				)}
 			</Pressable>
 		</Layout>
 	)

@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query'
 import clsx from 'clsx'
 import { FC, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -22,7 +23,10 @@ import Button from '@ui/button/Button'
 import Layout from '@ui/layout/Layout'
 import Txt from '@ui/text/Txt'
 
-const SectionProfileScreen: FC<SectionProfileType> = ({ route }) => {
+const SectionProfileScreen: FC<SectionProfileType> = ({
+	route,
+	navigation: { navigate }
+}) => {
 	const { section, sectionType } = route.params
 	const { width: screenWidth } = useWindowDimensions()
 
@@ -30,6 +34,8 @@ const SectionProfileScreen: FC<SectionProfileType> = ({ route }) => {
 	const [sectionColor, setSectionColor] = useState(section ? section.color : '')
 
 	const { selectedWallet } = useTypedSelector(({ wallets }) => wallets)
+
+	const queryClient = useQueryClient()
 
 	const { control, handleSubmit, reset } = useForm<ISectionRequest>({
 		mode: 'onChange',
@@ -44,13 +50,15 @@ const SectionProfileScreen: FC<SectionProfileType> = ({ route }) => {
 		data.icon = sectionIcon
 		data.color = sectionColor
 		data.type = sectionType
+		navigate('SectionsCnf')
 		if (section) {
-			const response = await SectionService.update(section.id, data)
-			console.log('update', response)
+			await SectionService.update(section.id, data)
 		} else if (selectedWallet) {
-			const response = await SectionService.create(selectedWallet.id, data)
-			console.log('create', response)
+			await SectionService.create(selectedWallet.id, data)
 		}
+		queryClient.invalidateQueries({
+			queryKey: [`${data.type}`, selectedWallet?.id]
+		})
 	}
 
 	return (
@@ -73,7 +81,6 @@ const SectionProfileScreen: FC<SectionProfileType> = ({ route }) => {
 												'mt-5 w-full rounded-md border-[3px] border-solid border-primaryPurple px-5 py-2 text-lg text-white',
 												error && 'border-red-500'
 											)}
-											keyboardType='numeric'
 											placeholder='Section name'
 											maxLength={28}
 											value={value}

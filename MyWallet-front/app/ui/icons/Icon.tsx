@@ -28,7 +28,6 @@ const Icon: FC<IconsProps> = (props): JSX.Element => {
 
 	switch (propsObj.name) {
 		case 'plus':
-		case ICONS.Statistics:
 			// @ts-ignore
 			return <Entypo {...propsObj} />
 		case 'heartbeat':
@@ -38,6 +37,7 @@ const Icon: FC<IconsProps> = (props): JSX.Element => {
 			return <Fontisto {...propsObj} />
 		case 'pluscircle':
 		case 'caretdown':
+		case ICONS.Statistics:
 		case 'caretup':
 			// @ts-ignore
 			return <AntDesign {...propsObj} />

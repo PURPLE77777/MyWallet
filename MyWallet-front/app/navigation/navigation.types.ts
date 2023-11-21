@@ -1,5 +1,7 @@
 import { ComponentType } from 'react'
 
+import { ITransactionResponse } from '@services/transaction/transaction.dto'
+
 import { EnumTypeTransaction, ISection } from '@AppTypes/section.interface'
 import { IWallet } from '@AppTypes/waller.interface'
 
@@ -10,8 +12,8 @@ export type RootStackParamList = {
 	Profile: undefined
 	Statistics: undefined
 	ReviewWallet: { wallet: IWallet } | undefined
-	SectionProfile: { section: ISection | null; sectionType: EnumTypeTransaction }
-	TransactionProfile: { wallet: IWallet }
+	SectionProfile: { section?: ISection; sectionType: EnumTypeTransaction }
+	TransactionProfile: { wallet: IWallet; transaction?: ITransactionResponse }
 }
 
 export interface IRoute {

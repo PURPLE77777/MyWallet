@@ -26,6 +26,28 @@ abstract class TransactionService {
 
 		return response.data
 	}
+
+	static async updateTransaction(
+		transactionId: number,
+		data: ITransationRequest
+	) {
+		const response = await instance<ITransactionResponse>({
+			url: `${TRANSACTION_BASE}/${transactionId}`,
+			method: 'patch',
+			data
+		})
+
+		return response.data
+	}
+
+	static async deleteTransaction(transactionId: number) {
+		const response = await instance<ITransationRequest>({
+			url: `${TRANSACTION_BASE}/${transactionId}`,
+			method: 'delete'
+		})
+
+		return response.data
+	}
 }
 
 export default TransactionService

@@ -4,7 +4,7 @@ import { Pressable } from 'react-native'
 
 import Icon from '@ui/icons/Icon'
 
-import { ISectionIcon } from '../type/section.interface'
+import { ISectionIcon } from '../types/section.interface'
 
 const SectionIcon: FC<ISectionIcon> = ({
 	icon,

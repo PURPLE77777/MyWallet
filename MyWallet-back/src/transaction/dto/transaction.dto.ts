@@ -13,3 +13,9 @@ export class TransactionDto {
 	@Min(0)
 	sectionId: number
 }
+
+export class TransactionUpdateDto {
+	@IsNumber()
+	@Min(0)
+	amount: number
+}

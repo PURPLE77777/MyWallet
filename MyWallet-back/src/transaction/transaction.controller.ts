@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common'
 import { Auth } from 'src/decorators/auth.decorator'
 import { GetAllTransactionsDto } from './dto/get-all.transaction.dto'
-import { TransactionDto } from './dto/transaction.dto'
+import { TransactionDto, TransactionUpdateDto } from './dto/transaction.dto'
 import { TransactionService } from './transaction.service'
 
 @Controller('transactions')
@@ -55,9 +55,9 @@ export class TransactionController {
 	@UsePipes(new ValidationPipe())
 	update(
 		@Param('transactionId') transactionId: string,
-		@Body() amount: Pick<TransactionDto, 'amount'>
+		@Body() dto: TransactionUpdateDto
 	) {
-		return this.transactionService.update(+transactionId, +amount)
+		return this.transactionService.update(+transactionId, dto)
 	}
 
 	@Auth()

@@ -13,7 +13,6 @@ interface IPieLegend {
 }
 
 const PieLegend: FC<IPieLegend> = ({ data }) => {
-	console.log(data)
 	return (
 		<ScrollView className='w-full rounded-[10px] bg-primaryLightGray px-3'>
 			{data
@@ -38,7 +37,7 @@ const PieLegend: FC<IPieLegend> = ({ data }) => {
 									section.type === EnumTypeTransaction.GAIN &&
 										'text-primaryGreen',
 									section.type === EnumTypeTransaction.EXPENSE &&
-										'text-primatyRed'
+										'text-primaryRed'
 								)}
 							>
 								{section.amount}

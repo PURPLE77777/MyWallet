@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import clsx from 'clsx'
 import { Dispatch, FC, SetStateAction } from 'react'
 import { ActivityIndicator, Pressable, Text, View } from 'react-native'
@@ -15,7 +15,7 @@ import { useTypedSelector } from '@hooks/useTypedSelector'
 import Button from '@ui/button/Button'
 import Icon from '@ui/icons/Icon'
 
-import { SelectedSectionType } from '../type/section.interface'
+import { SelectedSectionType } from '../types/section.interface'
 
 import SectionItem from './SectionItem'
 
@@ -41,13 +41,26 @@ const SectionPreview: FC<ISectionPreview> = ({
 		}
 	})
 
+	const queryClient = useQueryClient()
+
 	const { navigate } = useTypedNavigation()
+
+	const onDeleteSection = async () => {
+		if (selectedSection) {
+			await SectionService.delete(selectedSection.id)
+			queryClient.invalidateQueries({
+				queryKey: [`${typeTransactions}`, selectedWallet?.id]
+			})
+			setSelectedSection(null)
+		}
+	}
 
 	return (
 		<View
-			className={clsx('m-5 flex-1 items-center justify-between', {
-				'justify-center ': isFetching
-			})}
+			className={clsx(
+				'm-5 flex-1 items-center pt-3',
+				isFetching ? 'justify-center' : ' justify-between'
+			)}
 		>
 			<View
 				className={clsx('flex-row flex-wrap items-baseline gap-y-3', {
@@ -81,7 +94,6 @@ const SectionPreview: FC<ISectionPreview> = ({
 						onPress={() => {
 							setSelectedSection(null)
 							navigate('SectionProfile', {
-								section: null,
 								sectionType: typeTransactions
 							})
 						}}
@@ -95,22 +107,24 @@ const SectionPreview: FC<ISectionPreview> = ({
 			</View>
 
 			{selectedSection && !isFetching && (
-				<View className='w-full flex-row flex-nowrap justify-between'>
-					<Button
-						text={'Edit'}
-						onPress={() =>
-							navigate('SectionProfile', {
-								section: selectedSection,
-								sectionType: typeTransactions
-							})
-						}
-						className='basis-[45%] bg-primaryGreen'
-					/>
-					<Button
-						text={'Delete'}
-						className='basis-[45%] bg-primatyRed'
-						onPress={() => setSelectedSection(null)}
-					/>
+				<View className='flex-row'>
+					<View className='mx-10 w-full flex-row flex-nowrap justify-between'>
+						<Button
+							text={'Edit'}
+							onPress={() =>
+								navigate('SectionProfile', {
+									section: selectedSection,
+									sectionType: typeTransactions
+								})
+							}
+							className='basis-[45%] bg-primaryGreen'
+						/>
+						<Button
+							text={'Delete'}
+							className='basis-[45%] bg-primaryRed'
+							onPress={onDeleteSection}
+						/>
+					</View>
 				</View>
 			)}
 		</View>
